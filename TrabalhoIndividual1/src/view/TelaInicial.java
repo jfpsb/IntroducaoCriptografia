@@ -19,10 +19,13 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import controller.TelaInicialController;
 
 public class TelaInicial extends JFrame {
 
@@ -48,6 +51,9 @@ public class TelaInicial extends JFrame {
 	// Selecionador de arquivo
 	private JFileChooser chooser;
 
+	// Controller
+	private TelaInicialController controller;
+
 	public TelaInicial() {
 		// Configurações do formulário
 		super("Atividade Individual 1");
@@ -61,6 +67,9 @@ public class TelaInicial extends JFrame {
 		int x = (screenSize.width - width) / 2; // Calcula coordenada x para que tela fique centrada horizontalmente
 		int y = (screenSize.height - height) / 2; // Calculada coordenada y para que tela fique centra verticalmente
 		setLocation(x, y);
+
+		// Inicializa controller
+		controller = new TelaInicialController(this);
 
 		// Inicializando componentes de interface
 		lblAbrirArquivo = new JLabel("Selecione o Arquivo");
@@ -92,13 +101,18 @@ public class TelaInicial extends JFrame {
 
 		// Configura tamanho de letra de botão de cifrar
 		btnCifrar.setFont(new Font("Arial", Font.BOLD, 18));
-		
+
 		btnCifrar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				char c[] = txtChave.getText().toCharArray();
-				Arrays.sort(c);
-				System.out.println(new String(c));
+				String chave = txtChave.getText();
+				controller.setChave(chave);
+				try {
+					Boolean result = controller.cifrar();
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, e1.getMessage());
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -110,18 +124,18 @@ public class TelaInicial extends JFrame {
 
 				if (result == JFileChooser.APPROVE_OPTION) {
 					// Coloca caminho do arquivo escolhido na label de arquivo
-					lblAbrirArquivo.setText(chooser.getSelectedFile().getAbsolutePath());
-					char c[] = txtChave.getText().toCharArray();
-					Arrays.sort(c);
-					System.out.println(new String(c));
+					String path = chooser.getSelectedFile().getAbsolutePath();
+					lblAbrirArquivo.setText(path);
+					controller.carregaTextoClaro(path);
 				}
 			}
 		});
 
 		// Limita tamanho da chave a 7 caracteres
+		// e impede caracteres repetidos
 		txtChave.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
-				if (txtChave.getText().length() >= 7)
+				if (txtChave.getText().length() >= 7 || txtChave.getText().contains(String.valueOf(e.getKeyChar())))
 					e.consume();
 			}
 		});
