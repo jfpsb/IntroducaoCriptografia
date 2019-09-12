@@ -12,6 +12,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.PrintWriter;
 import java.nio.file.DirectoryStream.Filter;
 import java.util.Arrays;
 
@@ -108,7 +109,12 @@ public class TelaInicial extends JFrame {
 				String chave = txtChave.getText();
 				controller.setChave(chave);
 				try {
-					Boolean result = controller.cifrar();
+					controller.cifrar();
+					controller.salvarCifrado();
+					//TODO: Salvar decifrado					
+					JOptionPane.showMessageDialog(null, "Texto Cifrado Salvo em " + controller.getCifra().getDiretorio());
+					
+					reset();
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage());
 					e1.printStackTrace();
@@ -120,12 +126,17 @@ public class TelaInicial extends JFrame {
 		btnAbrirArquivo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				int result = chooser.showOpenDialog(wrapperPanel);
 
 				if (result == JFileChooser.APPROVE_OPTION) {
 					// Coloca caminho do arquivo escolhido na label de arquivo
 					String path = chooser.getSelectedFile().getAbsolutePath();
+					String dir = chooser.getCurrentDirectory().getAbsolutePath();
+					String nome = chooser.getSelectedFile().getName();
 					lblAbrirArquivo.setText(path);
+					controller.getCifra().setFilename(nome);
+					controller.getCifra().setDiretorio(dir);
 					controller.carregaTextoClaro(path);
 				}
 			}
@@ -162,5 +173,10 @@ public class TelaInicial extends JFrame {
 
 		// Adicionando o panel principal ao formulário
 		add(wrapperPanel);
+	}
+	
+	public void reset() {
+		txtChave.setText("");
+		controller.reset();
 	}
 }
