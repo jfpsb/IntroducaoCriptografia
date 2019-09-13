@@ -146,7 +146,7 @@ public class TelaInicial extends JFrame {
 		// e impede caracteres repetidos
 		txtChave.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
-				if (txtChave.getText().length() >= 7 || txtChave.getText().contains(String.valueOf(e.getKeyChar())))
+				if (txtChave.getText().length() >= 7)
 					e.consume();
 			}
 		});

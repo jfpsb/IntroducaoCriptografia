@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import model.Cifra;
+import model.Pair;
 import view.TelaInicial;
 
 public class TelaInicialController {
@@ -27,13 +30,13 @@ public class TelaInicialController {
 		}
 
 		// Testa se chave foi fornecida pelo usuário
-		if (cifra.getChaveMap().size() == 0) {
+		if (cifra.getChave().size() == 0) {
 			throw new Exception("Chave Não Foi Informada");
 		}
 
 		String textoClaroHolder = cifra.getTextoClaro();
 		// Tamanho da chave
-		int chaveLenght = cifra.getChaveMap().size();
+		int chaveLenght = cifra.getChave().size();
 		// Calcula quantos campos faltam no texto claro para completar a cifragem
 		int camposRestantes = chaveLenght - (textoClaroHolder.length() % chaveLenght);
 
@@ -44,7 +47,7 @@ public class TelaInicialController {
 		}
 
 		// Número de linhas na 'matriz'
-		int linhas = textoClaroHolder.length() / cifra.getChaveMap().size();
+		int linhas = textoClaroHolder.length() / cifra.getChave().size();
 
 		String cifrado; // Variável que vai guardar o texto decifrado em cada estágio
 
@@ -55,12 +58,13 @@ public class TelaInicialController {
 
 			cifrado = "";
 
-			// Itera entre os valores salvos no HashMap da chave
-			for (int i : cifra.getChaveMap().values()) {
-				// Guarda o index da coluna
-				int index = i;
+			Iterator<Pair> iterator = cifra.getChave().iterator();
 
-				// Para cada linha da 'matriz' recuperar a letra
+			while (iterator.hasNext()) {
+				Pair pair = iterator.next();
+
+				int index = pair.getValue();
+
 				for (int j = 0; j < linhas; j++) {
 					cifrado += textoClaroChar[index];
 					index += chaveLenght; // Somando tamanho da chave para ir para o próximo caracter
@@ -99,20 +103,21 @@ public class TelaInicialController {
 	}
 
 	public void setChave(String chave) {
-		//TODO: Habilitar chave com letras repetidas
-		HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+		ArrayList<Pair> pair = new ArrayList<Pair>();
 
 		// Converte chave em array de char
 		char chaveArray[] = chave.toCharArray();
 
-		// Salva em um HashMap o index da coluna de cada caracter da chave
+		// Salva em uma lista de Pair o index da coluna de cada caracter da chave
 		for (int i = 0; i < chaveArray.length; i++) {
-			map.put(chaveArray[i], i);
+			pair.add(new Pair(chaveArray[i], i));
 		}
 
-		cifra.setChaveMap(map);
+		pair.sort(new Pair());
+
+		cifra.setChave(pair);
 	}
-	
+
 	public void reset() {
 		cifra = new Cifra();
 	}

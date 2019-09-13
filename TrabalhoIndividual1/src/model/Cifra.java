@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Cifra {
@@ -7,7 +8,7 @@ public class Cifra {
 	private String textoCifrado = "";
 	private String diretorio;
 	private String filename;
-	private HashMap<Character, Integer> chaveMap = new HashMap<Character, Integer>();
+	private ArrayList<Pair> chave = new ArrayList<Pair>();
 
 	public String getTextoClaro() {
 		return textoClaro;
@@ -25,12 +26,12 @@ public class Cifra {
 		this.textoCifrado = textoCifrado;
 	}
 
-	public HashMap<Character, Integer> getChaveMap() {
-		return chaveMap;
+	public ArrayList<Pair> getChave() {
+		return chave;
 	}
 
-	public void setChaveMap(HashMap<Character, Integer> chave) {
-		this.chaveMap = chave;
+	public void setChave(ArrayList<Pair> chave) {
+		this.chave = chave;
 	}
 
 	public String getDiretorio() {
