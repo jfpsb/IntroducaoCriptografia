@@ -11,10 +11,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.PrintWriter;
-import java.nio.file.DirectoryStream.Filter;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -29,7 +25,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import controller.TelaInicialController;
 
 public class TelaInicial extends JFrame {
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final int width = 600; // Largura da tela
 	private static final int height = 130; // Altura da tela
 
@@ -111,9 +110,12 @@ public class TelaInicial extends JFrame {
 				try {
 					controller.cifrar();
 					controller.salvarCifrado();
-					//TODO: Salvar decifrado					
-					JOptionPane.showMessageDialog(null, "Texto Cifrado Salvo em " + controller.getCifra().getDiretorio());
-					
+
+					String decifrado = controller.decifrar();
+					controller.salvarDecifrado(decifrado);
+
+					JOptionPane.showMessageDialog(null,
+							"Texto Cifrado e Decifrado Salvo em " + controller.getCifra().getDiretorio());
 					reset();
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage());
@@ -174,9 +176,10 @@ public class TelaInicial extends JFrame {
 		// Adicionando o panel principal ao formulário
 		add(wrapperPanel);
 	}
-	
+
 	public void reset() {
 		txtChave.setText("");
+		lblAbrirArquivo.setText("Selecione o Arquivo");
 		controller.reset();
 	}
 }
