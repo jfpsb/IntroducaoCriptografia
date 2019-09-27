@@ -8,15 +8,29 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import model.Cifra;
+import model.Engrenagem;
+import model.Node;
 import view.TelaInicial;
 
 public class TelaInicialController {
 	private Cifra cifra;
 	private TelaInicial view;
 
+	private Engrenagem engrenagem1;
+	private Engrenagem engrenagem2;
+	private Engrenagem engrenagem3;
+
 	public TelaInicialController(TelaInicial view) {
 		this.view = view;
 		cifra = new Cifra();
+
+		engrenagem1 = new Engrenagem();
+		engrenagem2 = new Engrenagem();
+		engrenagem3 = new Engrenagem();
+
+		engrenagem1.setNextEngrenagem(engrenagem2);
+		engrenagem2.setNextEngrenagem(engrenagem3);
+		engrenagem3.setNextEngrenagem(engrenagem1);
 	}
 
 	/**
@@ -25,6 +39,20 @@ public class TelaInicialController {
 	 * @throws Exception
 	 */
 	public void cifrar() throws Exception {
+		char textoClaroArray[] = cifra.getTextoClaro().toCharArray();
+
+		for (int i = 0; i < textoClaroArray.length; i++) {
+
+			Node nodeEng1 = engrenagem1.get(textoClaroArray[i]);
+			Node nodeEng2 = engrenagem2.get(nodeEng1.getData());
+			Node nodeEng3 = engrenagem3.get(nodeEng2.getData());
+
+			engrenagem1.rotacionar();
+
+			System.out.print((char) nodeEng3.getData());
+		}
+		
+		System.out.println();
 	}
 
 	/**
@@ -80,19 +108,17 @@ public class TelaInicialController {
 		try {
 			scanner = new Scanner(new File(path), "UTF-8");
 			// Usa a expressão regular \A como delimitador
-			// Significa que o texto no arquivo será delimitado pelo seu começo
-			// e vai tornar o texto inteiro do texto uma só string
-			cifra.setTextoClaro(scanner.useDelimiter("\\A").next());
+			// Significa que o texto no arquivo será inicialmente delimitado pelo seu começo
+			// e vai tornar o texto inteiro do texto uma só string.
+			// Coloca o texto inteiro em caracteres maiúsculos.
+			// Substitui todos os espaços no texto pela letra X.
+			cifra.setTextoClaro(scanner.useDelimiter("\\A").next().toUpperCase().replace(' ', 'X'));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
 			if (scanner != null)
 				scanner.close();
 		}
-	}
-
-	public void setChave(String chave) {
-
 	}
 
 	public void reset() {

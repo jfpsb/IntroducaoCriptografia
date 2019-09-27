@@ -8,8 +8,6 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -18,7 +16,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -99,14 +96,14 @@ public class TelaInicial extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					controller.cifrar();
-					controller.salvarCifrado();
+					// controller.salvarCifrado();
 
-					String decifrado = controller.decifrar();
-					controller.salvarDecifrado(decifrado);
+					// String decifrado = controller.decifrar();
+					// controller.salvarDecifrado(decifrado);
 
-					JOptionPane.showMessageDialog(null,
-							"Texto Cifrado e Decifrado Salvo em " + controller.getCifra().getDiretorio());
-					reset();
+					// JOptionPane.showMessageDialog(null, "Texto Cifrado e Decifrado Salvo em " +
+					// controller.getCifra().getDiretorio());
+					// reset();
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage());
 					e1.printStackTrace();
