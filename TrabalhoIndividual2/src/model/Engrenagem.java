@@ -34,24 +34,29 @@ public class Engrenagem {
 	 */
 	private int rotacionado = 0;
 
+	private ArrayList<Integer> numeros;
+
 	/**
 	 * Construtor de engrenagem que atribui letras aleatórias
 	 */
 	public Engrenagem() {
-		ArrayList<Integer> numeros = new ArrayList<Integer>();
+		numeros = new ArrayList<Integer>();
 
+		// Crio uma lista com todas as letras do alfabeto.
 		// O número 65 representa o A (maiúsculo) na tabela ASCII.
 		// Letras são guardadas de acordo com seus valores na tabela ASCII.
 		for (int i = 0; i < 26; i++) {
 			numeros.add(i + 65);
-			add(i + 65);
 		}
 
-		/*
-		 * Collections.shuffle(numeros);
-		 * 
-		 * for(int i : numeros) { add(i); }
-		 */
+		// Embaralha números em lista
+		Collections.shuffle(numeros);
+
+		// Adiciono letras embaralhadas na lista circular
+		for (int i : numeros) {
+			add(i);
+		}
+
 	}
 
 	/**
@@ -107,6 +112,8 @@ public class Engrenagem {
 	public void clear() {
 		head = null;
 		last = null;
+		size = 0;
+		rotacionado = 0;
 	}
 
 	/**
@@ -130,6 +137,17 @@ public class Engrenagem {
 		if (rotacionado == 26) {
 			rotacionado = 0;
 			nextEngrenagem.rotacionar();
+		}
+	}
+
+	/**
+	 * Reseta engrenagem às posições iniciais
+	 */
+	public void reset() {
+		clear();
+
+		for (int i = 0; i < 26; i++) {
+			add(numeros.get(i));
 		}
 	}
 

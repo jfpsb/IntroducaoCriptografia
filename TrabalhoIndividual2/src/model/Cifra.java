@@ -3,6 +3,7 @@ package model;
 public class Cifra {
 	private String textoClaro = "";
 	private String textoCifrado = "";
+	private String textoDecifrado = "";
 	private String diretorio;
 	private String filename;
 
@@ -36,5 +37,13 @@ public class Cifra {
 
 	public void setFilename(String filename) {
 		this.filename = filename;
+	}
+
+	public String getTextoDecifrado() {
+		return textoDecifrado;
+	}
+
+	public void setTextoDecifrado(String textoDecifrado) {
+		this.textoDecifrado = textoDecifrado;
 	}
 }

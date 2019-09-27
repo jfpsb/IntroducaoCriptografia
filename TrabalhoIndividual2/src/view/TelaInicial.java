@@ -26,8 +26,8 @@ public class TelaInicial extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final int width = 600; // Largura da tela
-	private static final int height = 130; // Altura da tela
+	private static final int width = 600; // Largura do formulário
+	private static final int height = 130; // Altura do formulário
 
 	// Label
 	private JLabel lblAbrirArquivo;
@@ -42,7 +42,7 @@ public class TelaInicial extends JFrame {
 	private JButton btnAbrirArquivo;
 
 	// Selecionador de arquivo
-	private JFileChooser chooser;
+	private JFileChooser fileChooser;
 
 	// Controller
 	private TelaInicialController controller;
@@ -74,7 +74,7 @@ public class TelaInicial extends JFrame {
 		btnCifrar = new JButton("Cifrar");
 		btnAbrirArquivo = new JButton("Abrir Arquivo");
 
-		chooser = new JFileChooser();
+		fileChooser = new JFileChooser();
 
 		// Configurando atributos de componentes
 		lblAbrirArquivo.setHorizontalAlignment(SwingConstants.CENTER); // Centra texto horizontalmente
@@ -96,14 +96,14 @@ public class TelaInicial extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					controller.cifrar();
-					// controller.salvarCifrado();
+					controller.salvarCifrado();
 
-					// String decifrado = controller.decifrar();
-					// controller.salvarDecifrado(decifrado);
+					controller.decifrar();
+					controller.salvarDecifrado();
 
-					// JOptionPane.showMessageDialog(null, "Texto Cifrado e Decifrado Salvo em " +
-					// controller.getCifra().getDiretorio());
-					// reset();
+					JOptionPane.showMessageDialog(null,
+							"Texto Cifrado e Decifrado Salvo em " + controller.getCifra().getDiretorio());
+					reset();
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage());
 					e1.printStackTrace();
@@ -115,14 +115,14 @@ public class TelaInicial extends JFrame {
 		btnAbrirArquivo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-				int result = chooser.showOpenDialog(wrapperPanel);
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				int result = fileChooser.showOpenDialog(wrapperPanel);
 
 				if (result == JFileChooser.APPROVE_OPTION) {
 					// Coloca caminho do arquivo escolhido na label de arquivo
-					String path = chooser.getSelectedFile().getAbsolutePath();
-					String dir = chooser.getCurrentDirectory().getAbsolutePath();
-					String nome = chooser.getSelectedFile().getName();
+					String path = fileChooser.getSelectedFile().getAbsolutePath();
+					String dir = fileChooser.getCurrentDirectory().getAbsolutePath();
+					String nome = fileChooser.getSelectedFile().getName();
 					lblAbrirArquivo.setText(path);
 					controller.getCifra().setFilename(nome);
 					controller.getCifra().setDiretorio(dir);
@@ -132,12 +132,12 @@ public class TelaInicial extends JFrame {
 		});
 
 		// Configura pasta inicial do selecionador de arquivo
-		chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 		// Configura filtro para arquivos txt
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("Arquivo de Texto (*.txt)", "txt");
-		chooser.addChoosableFileFilter(filtro);
+		fileChooser.addChoosableFileFilter(filtro);
 		// Configura que somente a extensão txt estará disponível ao escolher arquivos
-		chooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.setAcceptAllFileFilterUsed(false);
 
 		// Adicionando componentes aos panels
 		camposPanel.add(lblAbrirArquivo);

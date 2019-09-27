@@ -24,13 +24,7 @@ public class TelaInicialController {
 		this.view = view;
 		cifra = new Cifra();
 
-		engrenagem1 = new Engrenagem();
-		engrenagem2 = new Engrenagem();
-		engrenagem3 = new Engrenagem();
-
-		engrenagem1.setNextEngrenagem(engrenagem2);
-		engrenagem2.setNextEngrenagem(engrenagem3);
-		engrenagem3.setNextEngrenagem(engrenagem1);
+		inicializaEngrenagem();
 	}
 
 	/**
@@ -39,20 +33,28 @@ public class TelaInicialController {
 	 * @throws Exception
 	 */
 	public void cifrar() throws Exception {
+		// Variável que vai guardar texto cifrado
+		String textoCifradoHolder = "";
+		// Array de caracteres do texto claro
 		char textoClaroArray[] = cifra.getTextoClaro().toCharArray();
 
+		// Iterando sobre cada caracter do texto claro
 		for (int i = 0; i < textoClaroArray.length; i++) {
-
+			// Alimento cada caracter para a primeira engrenagem e o resultado desta para a
+			// próxima até chegar na última
 			Node nodeEng1 = engrenagem1.get(textoClaroArray[i]);
 			Node nodeEng2 = engrenagem2.get(nodeEng1.getData());
 			Node nodeEng3 = engrenagem3.get(nodeEng2.getData());
 
+			// Rotaciona a engrenagem a cada caracter criptografado
 			engrenagem1.rotacionar();
 
-			System.out.print((char) nodeEng3.getData());
+			// Adiciono o caracter cifrado na variável temporária de texto cifrado
+			textoCifradoHolder += (char) nodeEng3.getData();
 		}
-		
-		System.out.println();
+
+		// Adiciono texto cifrado no model
+		cifra.setTextoCifrado(textoCifradoHolder);
 	}
 
 	/**
@@ -61,8 +63,41 @@ public class TelaInicialController {
 	 * @return Texto decifrado
 	 * @throws NoSuchElementException
 	 */
-	public String decifrar() throws NoSuchElementException {
-		return null;
+	public void decifrar() throws NoSuchElementException {
+		String textoCifradoHolder = cifra.getTextoCifrado();
+		char textoCifradoArray[] = textoCifradoHolder.toCharArray();
+		String textoDecifradoHolder = "";
+
+		// Coloco cada engrenagem em sua configuração inicial
+		engrenagem1.reset();
+		engrenagem2.reset();
+		engrenagem3.reset();
+
+		// Iterando por cada caracter do texto cifrado
+		for (int i = 0; i < textoCifradoArray.length; i++) {
+			// Para cada letra do alfabeto vou testar nos cilindros se o resultado é igual
+			// ao do texto cifrado.
+			// Em ASCII: 65 = A; 90 = Z;
+			for (int letra = 65; letra <= 90; letra++) {
+				Node nodeEng1 = engrenagem1.get(letra);
+				Node nodeEng2 = engrenagem2.get(nodeEng1.getData());
+				Node nodeEng3 = engrenagem3.get(nodeEng2.getData());
+
+				// Se consulta nos cilindros der igual à caracter presente no texto cifrado
+				if (nodeEng3.getData() == textoCifradoArray[i]) {
+					// Rotaciono engranagem 1
+					engrenagem1.rotacionar();
+
+					// Adiciono o caracter encontrado à variável atualmente salvando texto decifrado
+					textoDecifradoHolder += (char) letra;
+
+					break;
+				}
+			}
+		}
+
+		// Salvo texto decifrado no model
+		cifra.setTextoDecifrado(textoDecifradoHolder);
 	}
 
 	/**
@@ -71,7 +106,7 @@ public class TelaInicialController {
 	 * @throws FileNotFoundException
 	 */
 	public void salvarCifrado() throws FileNotFoundException {
-		String filename = cifra.getFilename() + " cifrado.txt";
+		String filename = "Trabalho Indiv. 2 - " + cifra.getFilename() + " cifrado.txt";
 		PrintWriter out = null;
 		out = new PrintWriter(new FileOutputStream(cifra.getDiretorio() + "\\" + filename));
 		out.println(cifra.getTextoCifrado());
@@ -84,14 +119,13 @@ public class TelaInicialController {
 	/**
 	 * Salva texto decifrado em arquivo
 	 * 
-	 * @param textoDecifrado Texto decifrado
 	 * @throws FileNotFoundException
 	 */
-	public void salvarDecifrado(String textoDecifrado) throws FileNotFoundException {
-		String filename = cifra.getFilename() + " decifrado.txt";
+	public void salvarDecifrado() throws FileNotFoundException {
+		String filename = "Trabalho Indiv. 2 - " + cifra.getFilename() + " decifrado.txt";
 		PrintWriter out = null;
 		out = new PrintWriter(new FileOutputStream(cifra.getDiretorio() + "\\" + filename));
-		out.println(textoDecifrado);
+		out.println(cifra.getTextoDecifrado());
 		if (out != null) {
 			out.flush();
 			out.close();
@@ -123,9 +157,20 @@ public class TelaInicialController {
 
 	public void reset() {
 		cifra = new Cifra();
+		inicializaEngrenagem();
 	}
 
 	public Cifra getCifra() {
 		return cifra;
+	}
+
+	private void inicializaEngrenagem() {
+		engrenagem1 = new Engrenagem();
+		engrenagem2 = new Engrenagem();
+		engrenagem3 = new Engrenagem();
+
+		engrenagem1.setNextEngrenagem(engrenagem2);
+		engrenagem2.setNextEngrenagem(engrenagem3);
+		engrenagem3.setNextEngrenagem(engrenagem1);
 	}
 }

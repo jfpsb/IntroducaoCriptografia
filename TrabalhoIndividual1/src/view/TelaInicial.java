@@ -111,8 +111,8 @@ public class TelaInicial extends JFrame {
 					controller.cifrar();
 					controller.salvarCifrado();
 
-					String decifrado = controller.decifrar();
-					controller.salvarDecifrado(decifrado);
+					controller.decifrar();
+					controller.salvarDecifrado();
 
 					JOptionPane.showMessageDialog(null,
 							"Texto Cifrado e Decifrado Salvo em " + controller.getCifra().getDiretorio());
