@@ -108,7 +108,7 @@ public class TelaInicialController {
 	public void salvarCifrado() throws FileNotFoundException {
 		String filename = "Trabalho Indiv. 2 - " + cifra.getFilename() + " cifrado.txt";
 		PrintWriter out = null;
-		out = new PrintWriter(new FileOutputStream(cifra.getDiretorio() + "\\" + filename));
+		out = new PrintWriter(new FileOutputStream(cifra.getDiretorio() + File.separator + filename));
 		out.println(cifra.getTextoCifrado());
 		if (out != null) {
 			out.flush();
@@ -124,7 +124,7 @@ public class TelaInicialController {
 	public void salvarDecifrado() throws FileNotFoundException {
 		String filename = "Trabalho Indiv. 2 - " + cifra.getFilename() + " decifrado.txt";
 		PrintWriter out = null;
-		out = new PrintWriter(new FileOutputStream(cifra.getDiretorio() + "\\" + filename));
+		out = new PrintWriter(new FileOutputStream(cifra.getDiretorio() + File.separator + filename));
 		out.println(cifra.getTextoDecifrado());
 		if (out != null) {
 			out.flush();

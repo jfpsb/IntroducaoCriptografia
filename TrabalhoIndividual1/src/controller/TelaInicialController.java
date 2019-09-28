@@ -92,7 +92,7 @@ public class TelaInicialController {
 	 * @return Texto decifrado
 	 * @throws NoSuchElementException
 	 */
-	public String decifrar() throws NoSuchElementException {
+	public void decifrar() throws NoSuchElementException {
 		// Tamanho da chave
 		int chaveLenght = cifra.getChave().size();
 		// Vetor de char que vai guardar cada caracter do texto decifrado
@@ -142,8 +142,8 @@ public class TelaInicialController {
 			// Guardando texto decifrado
 			decifrado = new String(decifradoArray);
 		}
-
-		return decifrado;
+		
+		cifra.setTextoDecifrado(decifrado);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class TelaInicialController {
 	public void salvarCifrado() throws FileNotFoundException {
 		String filename = "Trabalho Indiv. 1 - " + cifra.getFilename() + " cifrado.txt";
 		PrintWriter out = null;
-		out = new PrintWriter(new FileOutputStream(cifra.getDiretorio() + "\\" + filename));
+		out = new PrintWriter(new FileOutputStream(cifra.getDiretorio() + File.separator + filename));
 		out.println(cifra.getTextoCifrado());
 		if (out != null) {
 			out.flush();
@@ -170,7 +170,7 @@ public class TelaInicialController {
 	public void salvarDecifrado() throws FileNotFoundException {
 		String filename = "Trabalho Indiv. 1 - " + cifra.getFilename() + " decifrado.txt";
 		PrintWriter out = null;
-		out = new PrintWriter(new FileOutputStream(cifra.getDiretorio() + "\\" + filename));
+		out = new PrintWriter(new FileOutputStream(cifra.getDiretorio() + File.separator + filename));
 		out.println(cifra.getTextoDecifrado());
 		if (out != null) {
 			out.flush();
