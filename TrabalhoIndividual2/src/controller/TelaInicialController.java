@@ -83,9 +83,9 @@ public class TelaInicialController {
 				Node nodeEng2 = engrenagem2.get(nodeEng1.getData());
 				Node nodeEng3 = engrenagem3.get(nodeEng2.getData());
 
-				// Se consulta nos cilindros der igual à caracter presente no texto cifrado
+				// Se consulta nos cilindros der igual ao caractere presente no texto cifrado
 				if (nodeEng3.getData() == textoCifradoArray[i]) {
-					// Rotaciono engranagem 1
+					// Rotaciono engrenagem 1
 					engrenagem1.rotacionar();
 
 					// Adiciono o caracter encontrado à variável atualmente salvando texto decifrado
@@ -155,15 +155,27 @@ public class TelaInicialController {
 		}
 	}
 
+	/**
+	 * Reseta o modelo para uma nova execução e atribui novos valores nas
+	 * engrenagens
+	 */
 	public void reset() {
 		cifra = new Cifra();
 		inicializaEngrenagem();
 	}
 
+	/**
+	 * Retorna cifra para acesso na view
+	 * 
+	 * @return Cifra
+	 */
 	public Cifra getCifra() {
 		return cifra;
 	}
 
+	/**
+	 * Inicializa engrenagens e configura as referências de engrenagem
+	 */
 	private void inicializaEngrenagem() {
 		engrenagem1 = new Engrenagem();
 		engrenagem2 = new Engrenagem();

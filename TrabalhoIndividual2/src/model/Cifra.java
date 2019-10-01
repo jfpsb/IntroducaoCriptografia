@@ -1,5 +1,11 @@
 package model;
 
+/**
+ * Guarda os dados da cifra
+ * 
+ * @author jfpsb
+ *
+ */
 public class Cifra {
 	private String textoClaro = "";
 	private String textoCifrado = "";

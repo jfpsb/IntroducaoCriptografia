@@ -129,11 +129,16 @@ public class Engrenagem {
 		// com seus valores na tabela ASCII.
 		// 65 representa o A (maiúsculo)
 		antepenultimoNode = get(24 + 65);
+		// A atribuição já realiza a rotação
+		// Rotação no sentido de cima para baixo
 		head = last;
 		last = antepenultimoNode;
 
+		// Incrementa a quantidade de rotações já efetuadas
 		rotacionado++;
 
+		// Se engrenagem tiver rotacionado 26 vezes, a próxima engrenagem será
+		// rotacionada uma vez
 		if (rotacionado == 26) {
 			rotacionado = 0;
 			nextEngrenagem.rotacionar();

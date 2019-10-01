@@ -13,6 +13,12 @@ import model.Cifra;
 import model.Pair;
 import view.TelaInicial;
 
+/**
+ * Controller para TelaInicial
+ * 
+ * @author jfpsb
+ *
+ */
 public class TelaInicialController {
 	private Cifra cifra;
 	private TelaInicial view;
@@ -29,6 +35,9 @@ public class TelaInicialController {
 	 */
 	public void cifrar() throws Exception {
 
+		// Neste método não é utilizada uma matriz, mas sim um vetor, entretanto será
+		// usada a expressão 'matriz imaginária'
+
 		// Testa se o texto claro foi fornecido pelo usuário
 		if (cifra.getTextoClaro().trim().isEmpty()) {
 			throw new Exception("Texto Claro Não Foi Definido ou É Vazio");
@@ -40,46 +49,57 @@ public class TelaInicialController {
 		}
 
 		String textoClaroHolder = cifra.getTextoClaro();
-		// Tamanho da chave
+		// Tamanho da chave, representa a quantidade de colunas na matriz imaginária
 		int chaveLenght = cifra.getChave().size();
-		// Calcula quantos campos faltam no texto claro para completar a cifragem
-		int camposRestantes = 0;
-		if ((textoClaroHolder.length() % chaveLenght) != 0)
-			camposRestantes = chaveLenght - (textoClaroHolder.length() % chaveLenght);
+		// Calcula quantos campos estão vazios na última linha da matriz imaginária, se
+		// houver algum
+		int camposVazios = 0;
+		if ((textoClaroHolder.length() % chaveLenght) != 0) // Se módulo for zero não há campos em branco
+			camposVazios = chaveLenght - (textoClaroHolder.length() % chaveLenght);
 
-		for (int i = 0; i < camposRestantes; i++) {
+		// Para cada campo sem letra na última linha da matriz imaginária
+		for (int i = 0; i < camposVazios; i++) {
 			// Adiciona aos campos sem texto outras letras começando do "a" minúsculo
 			// Código 97 em ASCII igual a letra "a"
 			textoClaroHolder += (char) (97 + i);
 		}
 
-		// Número de linhas na 'matriz'
+		// Número de linhas na matriz imaginária
 		int linhas = textoClaroHolder.length() / cifra.getChave().size();
 
-		String cifrado; // Variável que vai guardar o texto decifrado em cada estágio
+		// Variável que vai guardar o texto decifrado em cada estágio
+		String cifrado;
 
 		// Três estágios de transposição
 		for (int p = 0; p < 3; p++) {
 			// Converte texto claro em array de char
 			char textoClaroChar[] = textoClaroHolder.toCharArray();
 
+			// Guarda os caracteres do texto cifrado um por um até o final do estágio
 			cifrado = "";
 
 			Iterator<Pair> iterator = cifra.getChave().iterator();
 
+			// Itera pelos caracteres da chave em ordem alfabética crescente (previamente
+			// ordenada)
 			while (iterator.hasNext()) {
 				Pair pair = iterator.next();
 
-				int index = pair.getValue();
+				// Coluna atribuída à letra do pair atual
+				int colunaAtual = pair.getValue();
 
+				// Para cada linha da matriz imaginária, insiro uma letra da coluna atual em
+				// cifrado
 				for (int j = 0; j < linhas; j++) {
-					cifrado += textoClaroChar[index];
-					// Somo o tamanho da chave ao index pra pular pra próxima linha da matriz
+					// Coloco em cifrado os caracteres da coluna da matriz imaginária
+					cifrado += textoClaroChar[colunaAtual];
+					// Somo o tamanho da chave à coluna atual pra pular pra próxima linha da matriz
 					// imaginária mas continuando na mesma coluna
-					index += chaveLenght;
+					colunaAtual += chaveLenght;
 				}
 			}
 
+			// A cada estágio de cifragem o texto cifrado fica salvo em textoClaroHolder
 			textoClaroHolder = cifrado;
 		}
 
@@ -97,13 +117,14 @@ public class TelaInicialController {
 		int chaveLenght = cifra.getChave().size();
 		// Vetor de char que vai guardar cada caracter do texto decifrado
 		char decifradoArray[] = new char[cifra.getTextoCifrado().length()];
-		// Número de linhas na 'matriz imaginária'
+		// Número de linhas na matriz imaginária
 		int linhas = cifra.getTextoCifrado().length() / cifra.getChave().size();
 
 		// Onde texto decifrado vai ficar guardado em cada estágio.
 		// No início guardo o texto cifrado nesta variável
 		String decifrado = cifra.getTextoCifrado();
 
+		// Decifragem em 3 estágios
 		for (int i = 0; i < 3; i++) {
 			// A variável "decifrado" vai de fato guardar o texto cifrado até o término da
 			// execução do último estágio da decifragem. Após isso nela estará o texto
@@ -121,7 +142,7 @@ public class TelaInicialController {
 
 			// Percorro todo o texto cifrado, caracter por caracter
 			for (int j = 0; j < decifrado.length(); j++) {
-				/**
+				/*
 				 * Se o módulo da posição em que estou no texto cifrado (j) com o número de
 				 * linhas da matriz imaginária for zero significa que cheguei ao final da linha
 				 * da matriz. Então atribuo a pair a próxima coluna da matriz e atribuo a index
@@ -142,7 +163,7 @@ public class TelaInicialController {
 			// Guardando texto decifrado
 			decifrado = new String(decifradoArray);
 		}
-		
+
 		cifra.setTextoDecifrado(decifrado);
 	}
 
@@ -186,11 +207,11 @@ public class TelaInicialController {
 	public void carregaTextoClaro(String path) {
 		Scanner scanner = null;
 		try {
-			scanner = new Scanner(new File(path), "UTF-8");
+			scanner = new Scanner(new File(path));
 			// Usa a expressão regular \A como delimitador
 			// Significa que o texto no arquivo será delimitado pelo seu começo
 			// e vai tornar o texto inteiro do texto uma só string
-			cifra.setTextoClaro(scanner.useDelimiter("\\A").next());
+			cifra.setTextoClaro(scanner.useDelimiter("\\A").next().toLowerCase());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
@@ -206,7 +227,7 @@ public class TelaInicialController {
 	 */
 	public void setChave(String chave) {
 		// Lista de pares
-		ArrayList<Pair> pair = new ArrayList<Pair>();
+		ArrayList<Pair> pairs = new ArrayList<Pair>();
 
 		// Converte chave em array de char
 		char chaveArray[] = chave.toCharArray();
@@ -214,19 +235,27 @@ public class TelaInicialController {
 		// Salva em uma lista de Pair.
 		// Cada letra da chave é uma key, a posição da letra na string é o value
 		for (int i = 0; i < chaveArray.length; i++) {
-			pair.add(new Pair(chaveArray[i], i));
+			pairs.add(new Pair(chaveArray[i], i));
 		}
 
 		// Ordena de forma crescente (alfabética) as chaves
-		pair.sort(new Pair());
+		pairs.sort(new Pair());
 
-		cifra.setChave(pair);
+		cifra.setChave(pairs);
 	}
 
+	/**
+	 * Reseta o modelo para uma nova execução
+	 */
 	public void reset() {
 		cifra = new Cifra();
 	}
 
+	/**
+	 * Retorna cifra para acesso na view
+	 * 
+	 * @return Cifra
+	 */
 	public Cifra getCifra() {
 		return cifra;
 	}

@@ -1,8 +1,13 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
+/**
+ * Guarda os dados da cifra
+ * 
+ * @author jfpsb
+ *
+ */
 public class Cifra {
 	private String textoClaro = "";
 	private String textoCifrado = "";
@@ -50,7 +55,7 @@ public class Cifra {
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
-	
+
 	public String getTextoDecifrado() {
 		return textoDecifrado;
 	}
