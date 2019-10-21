@@ -9,6 +9,12 @@ class Controller:
     def cifrar(self):
         # UTILIZO O TERMO MATRIZ AQUI, MAS A MANIPULAÇÃO É FEITA EM UM VETOR
 
+        if len(self.cifra.chave) == 0:
+            raise ValueError("Informe uma chave!")
+
+        if self.cifra.caminho.strip() == "":
+            raise ValueError("Escolha Um Arquivo Com Texto Claro!")
+
         # Guarda texto claro
         textoClaro = self.cifra.textoClaro
         # Guarda tamanho da chave
@@ -103,19 +109,23 @@ class Controller:
         arquivoDecifrado.write(self.cifra.textoDecifrado)
 
     # Lê texto claro de arquivo
-    def leTextoClaro(self, caminho):
-        arquivo = io.open(caminho, "rt", encoding="utf-8")
+    def leTextoClaro(self):
+        if len(self.cifra.caminho) == 0:
+            raise ValueError("Escolha Um Arquivo Com Texto Claro!")
+
+        arquivo = io.open(self.cifra.caminho, "rt", encoding="utf-8")
         self.cifra.textoClaro = arquivo.read()
         arquivo.close()
 
     # Configura os pares de chave e ordena de forma crescente em relação ao
     # caractere
     def setChave(self, chave):
+        self.cifra.chave.clear()
         for i in range(0, len(chave)):
             par = tuple((chave[i], i))
             self.cifra.chave.append(par)
 
         self.cifra.sortChave()
 
-    def reset():
-        pass
+    def reset(self):
+        self.cifra = Cifra.Cifra()

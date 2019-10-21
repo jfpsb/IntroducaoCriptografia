@@ -31,6 +31,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TranspLinhaColuna.py" />
+    <Compile Include="view\MessageBox.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="view\View.py">
       <SubType>Code</SubType>
     </Compile>
