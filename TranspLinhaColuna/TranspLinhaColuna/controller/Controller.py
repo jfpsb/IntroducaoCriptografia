@@ -111,7 +111,12 @@ class Controller:
             raise ValueError("Escolha Um Arquivo Com Texto Claro!")
 
         arquivo = io.open(self.cifra.caminho, "rt", encoding="utf-8")
-        self.cifra.textoClaro = arquivo.read()
+        texto = arquivo.read()
+
+        if len(texto.strip()) == 0:
+            raise ValueError("O Arquivo Está Vazio!")
+
+        self.cifra.textoClaro = texto
         arquivo.close()
 
     # Configura os pares de chave e ordena de forma crescente em relação ao
