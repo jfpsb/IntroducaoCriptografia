@@ -10,7 +10,7 @@ class View:
         # Criando objeto de janela
         self.view = tkinter.Tk(screenName = "View")
         self.view.title("Atividade Individual 1 - Criptografia por Transposição")
-        self.view.resizable(0, 0)
+        self.view.resizable(0, 1)
         self.view.pack_propagate(0)
         # Tela com tamanho 600 x 120 e abrindo centralizada
         self.view.update_idletasks()
