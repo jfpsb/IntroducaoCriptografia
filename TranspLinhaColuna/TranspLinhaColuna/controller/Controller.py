@@ -9,10 +9,7 @@ class Controller:
     def cifrar(self):
         # UTILIZO O TERMO MATRIZ AQUI, MAS A MANIPULAÇÃO É FEITA EM UM VETOR
 
-        if len(self.cifra.chave) == 0:
-            raise ValueError("Informe uma chave!")
-
-        if self.cifra.caminho.strip() == "":
+        if len(self.cifra.caminho) == 0:
             raise ValueError("Escolha Um Arquivo Com Texto Claro!")
 
         # Guarda texto claro
@@ -120,7 +117,16 @@ class Controller:
     # Configura os pares de chave e ordena de forma crescente em relação ao
     # caractere
     def setChave(self, chave):
+        if len(chave.strip()) == 0:
+            raise ValueError("Informe uma chave!")
+
+        if len(chave.strip()) > 7:
+            raise ValueError("A Chave Pode Ter No Máximo 7 Caracteres!")
+
         self.cifra.chave.clear()
+
+        chave = chave.strip()
+
         for i in range(0, len(chave)):
             par = tuple((chave[i], i))
             self.cifra.chave.append(par)

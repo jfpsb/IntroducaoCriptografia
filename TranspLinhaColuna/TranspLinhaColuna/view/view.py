@@ -1,5 +1,5 @@
-from controller import Controller
 import tkinter
+from controller import Controller
 from tkinter import Label, Entry, filedialog, Toplevel, Button
 from pathlib import Path
 from view import MessageBox
@@ -57,8 +57,8 @@ class View:
         chave = self.txtChave.get()
 
         try:
-            self.controller.leTextoClaro()
             self.controller.setChave(chave.strip())
+            self.controller.leTextoClaro()
 
             self.controller.cifrar()
             self.controller.decifrar()
