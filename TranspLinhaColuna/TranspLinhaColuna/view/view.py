@@ -8,16 +8,10 @@ class View:
     # Construtor
     def __init__(self):
         # Criando objeto de janela
-        self.view = tkinter.Tk(screenName = "View")
+        self.view = tkinter.Tk()
         self.view.title("Atividade Individual 1 - Criptografia por Transposição")
         self.view.resizable(0, 1)
         self.view.pack_propagate(0)
-        # Tela com tamanho 600 x 120 e abrindo centralizada
-        self.view.update_idletasks()
-        tela_w = self.view.winfo_screenwidth()
-        tela_h = self.view.winfo_screenheight()
-        self.view.geometry("600x120+{}+{}".format(int(tela_w / 2 - 600 / 2), int(tela_h / 2 - 120 / 2)))
-        self.view.columnconfigure(0, weight=1)
 
         #Estilos de fonte
         self.fonteLabel = ("Century Gothic", 14)
@@ -25,7 +19,7 @@ class View:
         self.fonteButton = ("Century Gothic", 14, "bold")
 
         # Criando labels
-        Label(self.view, text="Informe a Chave: ", font=self.fonteLabel).grid(row=0, column = 0)
+        Label(self.view, text="Informe a Chave:", font=self.fonteLabel).grid(row=0, column = 0)
         self.lblArquivo = Label(self.view, text="Selecione o Arquivo Com o Texto Claro:", font=self.fonteLabel, wraplength=500)
         self.lblArquivo.grid(row = 1, column = 0)
 
@@ -36,6 +30,15 @@ class View:
         # Criando botões
         Button(self.view, text="Abrir Tela de Seleção", font=self.fonteButton, command=self.abrirFileDialog).grid(row = 1, column = 1)
         Button(self.view, text="Cifrar", font=self.fonteButton, command=self.cifrar).grid(row = 2, column = 0, columnspan = 2)
+
+        # Configura posição da tela após inserir itens
+        self.view.update_idletasks()
+        tela_w = self.view.winfo_screenwidth()
+        tela_h = self.view.winfo_screenheight()
+        janela_w = self.view.winfo_reqwidth()
+        janela_h = self.view.winfo_reqheight()
+        self.view.geometry("+{}+{}".format(int(tela_w / 2 - janela_w / 2), int(tela_h / 2 - janela_h / 2)))
+        self.view.columnconfigure(0, weight=1)
 
         # Instancia controller
         self.controller = Controller.Controller()
