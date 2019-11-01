@@ -1,5 +1,4 @@
-import io
-import os
+import io, os, re
 from model.Cifra import Cifra
 from model.Engrenagem import Engrenagem
 from model.Node import Node
@@ -56,11 +55,13 @@ class Controller:
 
     def salvarCifrado(self):
         arquivoCifrado = open(os.path.join(self.cifra.getDiretorio(), "Ativ. Individual 2 - Máquina de Rotação - Texto Cifrado - " + self.cifra.getNomeArquivo()), "w")
-        arquivoCifrado.write(self.cifra.textoCifrado)
+        # Trata barra invertida
+        arquivoCifrado.write(self.cifra.textoCifrado.encode("unicode-escape").decode("ascii"))
 
     def salvarDecifrado(self):
         arquivoDecifrado = open(os.path.join(self.cifra.getDiretorio(), "Ativ. Individual 2 - Máquina de Rotação - Texto Decifrado - " + self.cifra.getNomeArquivo()), "w")
-        arquivoDecifrado.write(self.cifra.textoDecifrado)
+        # Trata barra invertida
+        arquivoDecifrado.write(self.cifra.textoDecifrado.encode("unicode-escape").decode("ascii"))
 
     # Lê texto claro de arquivo
     def leTextoClaro(self):

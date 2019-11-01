@@ -32,6 +32,7 @@ class View:
         Button(self.view, text="Cifrar", font=self.fonteButton, command=self.cifrar).grid(row = 2, column = 0, columnspan = 2)
 
         # Configura posição da tela após inserir itens
+		# Tela centrada
         self.view.update_idletasks()
         tela_w = self.view.winfo_screenwidth()
         tela_h = self.view.winfo_screenheight()

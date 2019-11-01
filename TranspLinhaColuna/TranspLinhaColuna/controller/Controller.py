@@ -1,6 +1,5 @@
 from model import Cifra
-import io
-import os
+import io, os
 
 class Controller:
     def __init__(self):
@@ -9,6 +8,7 @@ class Controller:
     def cifrar(self):
         # UTILIZO O TERMO MATRIZ AQUI, MAS A MANIPULAÇÃO É FEITA EM UM VETOR
 
+		# Se não for informado o arquivo com texto claro
         if len(self.cifra.caminho) == 0:
             raise ValueError("Escolha Um Arquivo Com Texto Claro!")
 
@@ -26,7 +26,7 @@ class Controller:
             camposVazios = tamanhoChave - (len(textoClaro) % tamanhoChave)
 
         for i in range(camposVazios):
-            textoClaro += chr(97 + i) # Converte para char.  97 corresponde a 'a' na tabela ascii
+            textoClaro += chr(97 + i) # Converte para char. 97 corresponde a 'a' na tabela unicode
 
         # Calcula quantas linhas teria a matriz com texto claro
         linhas = int(len(textoClaro) / tamanhoChave)
@@ -122,21 +122,30 @@ class Controller:
     # Configura os pares de chave e ordena de forma crescente em relação ao
     # caractere
     def setChave(self, chave):
+		# Se a chave estiver vazia
         if len(chave.strip()) == 0:
             raise ValueError("Informe uma chave!")
 
+		# Se a chave possuir mais de 7 caracteres
         if len(chave.strip()) > 7:
             raise ValueError("A Chave Pode Ter No Máximo 7 Caracteres!")
 
+		# Limpa chave se possuir
         self.cifra.chave.clear()
 
+		# Remove espaços no início e final da chave informada
         chave = chave.strip()
 
+		# Para letra da chave
         for i in range(0, len(chave)):
+			# Crio uma tupla com primeiro item igual à letra e segundo item igual à posição dessa letra na string
             par = tuple((chave[i], i))
+			# Adiciona a tupla na chave
             self.cifra.chave.append(par)
 
+		# Ordena itens
         self.cifra.sortChave()
 
+	# Restaura objeto de cifra
     def reset(self):
         self.cifra = Cifra.Cifra()

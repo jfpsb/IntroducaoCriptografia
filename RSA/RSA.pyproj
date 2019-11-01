@@ -2,15 +2,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>193b5563-64c2-4033-8538-af4f33ec3fa0</ProjectGuid>
+    <ProjectGuid>557e6909-329e-4f1e-a2b0-8ac37f8c2477</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>TranspLinhaColuna.py</StartupFile>
+    <StartupFile>RSA.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>TranspLinhaColuna</Name>
-    <RootNamespace>TranspLinhaColuna</RootNamespace>
+    <Name>RSA</Name>
+    <RootNamespace>RSA</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,28 +21,25 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="controller\Controller.py">
+    <Compile Include="Controller\Controller.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="controller\__init__.py">
+    <Compile Include="Controller\__init__.py" />
+    <Compile Include="Model\Cifra.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="model\Cifra.py">
+    <Compile Include="Model\__init__.py" />
+    <Compile Include="RSA.py" />
+    <Compile Include="View\MessageBox.py" />
+    <Compile Include="View\View.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TranspLinhaColuna.py" />
-    <Compile Include="view\MessageBox.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="view\View.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="view\__init__.py" />
+    <Compile Include="View\__init__.py" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="controller\" />
-    <Folder Include="model\" />
-    <Folder Include="view\" />
+    <Folder Include="Model\" />
+    <Folder Include="Controller\" />
+    <Folder Include="View\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

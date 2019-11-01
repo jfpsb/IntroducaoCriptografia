@@ -13,14 +13,16 @@ class Engrenagem:
         self.caracteres = []
 
         # Adicionando os caracteres do alfabeto da engrenagem.
-        # Começando do 32, igual ao espaço na tabela unicode
+        # Começando do 32, igual ao espaço (" ") na tabela unicode
         # até o 255, igual a ÿ na tabela unicode.
-        # Ao todo são 191 caracteres 'printáveis' com suporte
+        # Ao todo a aplicação suporta 191 caracteres 'printáveis'
         for i in range(32, 256):
             self.caracteres.append(chr(i))
 
-        #random.shuffle(numeros)
+		# Embaralha caracteres na lista
+        random.shuffle(self.caracteres)
 
+		# Adiciona caracteres na engrenagem
         for i in self.caracteres:
             self.add(i)
 
