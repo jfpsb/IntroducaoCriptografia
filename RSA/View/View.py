@@ -2,9 +2,10 @@ from Controller.Controller import Controller
 from Model.Cifra import Cifra
 import tkinter
 from tkinter import *
+from tkinter import filedialog
 from tkinter.ttk import Separator
 from pathlib import Path
-from View import MessageBox
+from View.MessageBox import MessageBox
 
 class View:
     # Construtor
@@ -18,7 +19,15 @@ class View:
         #Estilos de fonte
         self.fonteLabel = ("Century Gothic", 14)
         fonteEntry = ("Century Gothic", 12)
+        fonteChave = ("Century Gothic", 10)
         self.fonteButton = ("Century Gothic", 14, "bold")
+
+        # Frame
+        frameDadosChave = tkinter.Frame(self.view)
+        frameDadosChave.grid(
+            row = 3,
+            columnspan = 2,
+            pady = (15, 0))
 
         # Criando labels
         self.lblP = Label(
@@ -34,20 +43,64 @@ class View:
         self.lblArquivo = Label(
             self.view,
             text="Selecione o Arquivo Com o Texto Claro:",
-            font=self.fonteLabel, wraplength=500)
+            font=self.fonteLabel,
+            wraplength=500)
+
+        self.lblModulo = Label(
+            frameDadosChave,
+            text="Módulo:",
+            font=fonteChave)
+
+        self.lblPublica = Label(
+            frameDadosChave,
+            text="Chave Pública:",
+            font=fonteChave)
+
+        self.lblPrivada = Label(
+            frameDadosChave,
+            text="Chave Privada:",
+            font=fonteChave)
+
+        self.lblValorModulo = Label(
+            frameDadosChave,
+            text="-",
+            font=fonteChave)
+
+        self.lblValorPublica = Label(
+            frameDadosChave,
+            text="-",
+            font=fonteChave)
+
+        self.lblValorPrivada = Label(
+            frameDadosChave,
+            text="-",
+            font=fonteChave)
 
         self.lblP.grid(
             row = 0,
-            column = 0)
+            column = 0,
+            ipady = 5)
 
         self.lblQ.grid(
             row = 1,
-            column = 0)
+            column = 0,)
 
         self.lblArquivo.grid(
-            row = 4,
+            row = 5,
             column = 0,
             columnspan = 2)
+
+        self.lblModulo.pack(side = tkinter.LEFT)
+
+        self.lblValorModulo.pack(side = tkinter.LEFT)
+
+        self.lblPublica.pack(side = tkinter.LEFT)
+
+        self.lblValorPublica.pack(side = tkinter.LEFT)
+
+        self.lblPrivada.pack(side = tkinter.LEFT)
+
+        self.lblValorPrivada.pack(side = tkinter.LEFT)
 
         # Criando entrada de texto
         self.txtP = Entry(
@@ -69,7 +122,7 @@ class View:
             padx = 5)
 
         Separator(self.view).grid(
-            row = 3,
+            row = 4,
             column = 0,
             columnspan = 2,
             padx = 10,
@@ -77,7 +130,7 @@ class View:
             sticky="ew")
 
         Separator(self.view).grid(
-            row = 6,
+            row = 7,
             column = 0,
             columnspan = 2,
             padx = 10,
@@ -88,7 +141,8 @@ class View:
         Button(
             self.view,
             text="Gerar Chaves",
-            font=self.fonteButton).grid(
+            font=self.fonteButton,
+            command=self.gerarChaves).grid(
                 row = 2,
                 column = 0,
                 columnspan = 2,
@@ -101,7 +155,7 @@ class View:
             text="Abrir Tela de Seleção",
             font=self.fonteButton,
             command=self.abrirFileDialog).grid(
-                row = 5,
+                row = 6,
                 column = 0,
                 columnspan = 2,
                 sticky="ew",
@@ -112,7 +166,7 @@ class View:
             text="Cifrar",
             font=self.fonteButton,
             command=self.cifrar).grid(
-                row = 7,
+                row = 8,
                 column = 0,
                 columnspan = 2,
                 sticky="ew",
@@ -129,11 +183,7 @@ class View:
         self.view.columnconfigure(0, weight=1)
 
         # Instancia controller
-        self.controller = Controller()
-
-        cifra = Cifra()
-
-        print(cifra.mdc(66, 6670))
+        self.controller = Controller(self)
 
     # Inicia view
     def iniciar(self):
@@ -147,11 +197,20 @@ class View:
             self.lblArquivo["text"] = self.view.caminho
             self.controller.cifra.caminho = self.view.caminho
 
+    def gerarChaves(self):
+        P = self.txtP.get()
+        Q = self.txtQ.get()
+
+        try:
+            self.controller.gerarChaves(P, Q)
+        except ValueError as ve:
+            messageBox = MessageBox("Erro ao Executar Cifragem", ve.args[0], None)
+            print(ve.args)
+
     # Função executada ao apertar botão de cifrar
     def cifrar(self):
         try:
-            self.controller.leTextoClaro()
-
+            self.controller.carregarTextoClaro()
             self.controller.cifrar()
             self.controller.decifrar()
 
@@ -169,4 +228,14 @@ class View:
     # Reseta os campos da view e o modelo no controle
     def reset(self):
         self.lblArquivo["text"] = "Selecione o Arquivo Com o Texto Claro:"
+        self.txtP.delete(0, "end")
+        self.txtQ.delete(0, "end")
+        self.lblValorModulo["text"] = "-"
+        self.lblValorPrivada["text"] = "-"
+        self.lblValorPublica["text"] = "-"
         self.controller.reset()
+
+    def atualizaLabelChave(self, pub, priv, mod):
+        self.lblValorModulo["text"] = mod
+        self.lblValorPrivada["text"] = priv
+        self.lblValorPublica["text"] = pub
