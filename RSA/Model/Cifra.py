@@ -1,4 +1,5 @@
 import io, os
+from math import fmod
 
 class Cifra:
     def __init__(self):
