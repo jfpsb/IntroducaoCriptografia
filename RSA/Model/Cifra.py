@@ -58,7 +58,7 @@ class Cifra:
         if len(self.caminho) == 0:
             raise ValueError("Escolha Um Arquivo Com Texto Claro!")
 
-        arquivo = io.open(self.caminho, "rt", encoding="utf-8")
+        arquivo = io.open(self.caminho, "rb")
         texto = arquivo.read()
 
         if len(texto.strip()) == 0:
