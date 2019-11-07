@@ -1,9 +1,11 @@
 import io, os, random
 from math import fmod
+from pathlib import Path
 
 class Cifra:
     def __init__(self):
-        path = os.path.expanduser("~/Documents")
+        # Diretório onde fica a chave privada
+        path = os.path.join(Path.home(), "Criptografia RSA")
 
         self.textoClaro = ""
         self.textoCifrado = ""
@@ -18,6 +20,7 @@ class Cifra:
         self.chavepublica = None
         self.chaveprivada = None
 
+    # Gera a chave pública com um e pseudo aleatório
     def gerarChavePublica(self):
         while(True):
             # Determina e com números pseudo aleatórios
@@ -28,6 +31,7 @@ class Cifra:
 
         return (e, self.n)
 
+    # Gera a chave privada
     def gerarChavePrivada(self, e):
         # Gerando chave privada usando o Algoritmo Euclidiano Estendido
         # (link @ https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm)
@@ -58,6 +62,7 @@ class Cifra:
 
         return (d, self.n)
 
+    # Carrego texto claro no modelo
     def carregarTextoClaro(self):
         if len(self.caminho) == 0:
             raise ValueError("Escolha Um Arquivo Com Texto Claro!")
@@ -72,6 +77,7 @@ class Cifra:
 
         arquivo.close()
 
+    # Carrego as chaves de seus arquivos
     def carregarChaves(self):
         if len(self.caminhoChavePublica) == 0:
             raise ValueError("Escolha Um Arquivo Com A Chave Pública!")
@@ -87,6 +93,7 @@ class Cifra:
         if len(privada.strip()) == 0:
             raise ValueError("A Chave Privada Está Vazia!")
 
+        # As chaves são dois valores separados por um espaço
         publica = publica.split(" ")
         privada = privada.split(" ")
 
@@ -99,6 +106,7 @@ class Cifra:
         arquivoPublica.close()
         arquivoPrivada.close()
 
+    # Função chamada para cifrar
     def cifrar(self):
         e = self.chavepublica[0]
         n = self.chavepublica[1]
@@ -115,6 +123,7 @@ class Cifra:
 
         self.textoCifrado = textoCifrado
 
+    # Função chamada para decifrar
     def decifrar(self):
         d = self.chaveprivada[0]
         n = self.chavepublica[1]

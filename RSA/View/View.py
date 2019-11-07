@@ -185,12 +185,13 @@ class View:
             self.lblChave["text"] = self.view.caminhoChavePublica
             self.controller.cifra.caminhoChavePublica = self.view.caminhoChavePublica
 
+    # Chama função que gera as chaves públicas e privadas
     def gerarChaves(self):
-        P = self.txtP.get()
-        Q = self.txtQ.get()
+        p = self.txtP.get()
+        q = self.txtQ.get()
 
         try:
-            result = self.controller.gerarChaves(P, Q)
+            result = self.controller.gerarChaves(p, q)
             if result == True:
                 messageBox = MessageBox("Chaves Geradas Com Sucesso", "Chave Pública Salva Em " + str(Path.home()), None)
         except ValueError as ve:

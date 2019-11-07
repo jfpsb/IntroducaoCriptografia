@@ -7,6 +7,7 @@ class Controller:
         self.cifra = Cifra()
         self.view = view
 
+    # Gera as chaves pública e privada
     def gerarChaves(self, p, q):
         if len(p) == 0:
             raise ValueError("Valor de P Não Pode Ser Vazio!")
@@ -45,18 +46,23 @@ class Controller:
 
         return True
 
+    # Salva a chave pública em arquivo
     def salvarChavePublica(self, chave):
         user_dir = str(Path.home())
         arquivo = open(os.path.join(user_dir, "Criptografia RSA - Chave Pública.txt"), "w")
         arquivo.write(str(chave[0]) + " " + str(chave[1]))
         arquivo.close()
 
+    # Salva a chave privada em arquivo
     def salvarChavePrivada(self, chave):
-        path = os.path.expanduser("~/Documents")
+        path = os.path.join(Path.home(), "Criptografia RSA")
+        # Cria diretório se não existir
+        Path(path).mkdir(exist_ok=True)
         arquivo = open(os.path.join(path, "Criptografia RSA - Chave Privada.txt"), "w")
         arquivo.write(str(chave[0]) + " " + str(chave[1]))
         arquivo.close()
 
+    # Chama função de cifrar do modelo
     def cifrar(self):
         if len(self.cifra.caminho) == 0:
             raise ValueError("Escolha Um Arquivo Com Texto Claro!")
@@ -66,6 +72,7 @@ class Controller:
 
         self.cifra.cifrar()
 
+    # Chama função de decifrar do modelo
     def decifrar(self):
         self.cifra.decifrar()
 
@@ -81,6 +88,7 @@ class Controller:
     def carregarChaves(self):
         self.cifra.carregarChaves()
 
+    # Testa se número é primo
     def isPrime(self, n):
         if n > 1:
             for i in range(2, int(n**0.5) + 2):
