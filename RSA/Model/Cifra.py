@@ -16,7 +16,9 @@ class Cifra:
 
     def gerarChavePublica(self):
         while(True):
+            # Determina e com números pseudo aleatórios
             e = random.randrange(3, self.phi)
+            # Se o MDC entre e e phi for 1 então é uma chave pública válida
             if self.mdc(e, self.phi) == 1:
                 break
 
@@ -47,6 +49,7 @@ class Cifra:
             s0, s1 = s1, s
             t0, t1 = t1, t
 
+        # Se der um valor negativo somo com o phi e depois calculo o módulo
         while t0 < 0:
             t0 += self.phi
         
@@ -75,9 +78,13 @@ class Cifra:
         n = self.chavepublica[1]
         textoCifrado = ""
 
+        # Para letra do texto claro
         for letra in self.textoClaro:
+            # Pego seu valor inteiro de acordo com a tabela unicode
             uni_ordem = ord(letra)
+            # Calculo o caractere criptografado
             c = (uni_ordem ** e) % n
+            # Insiro no texto como uma letra da tabela unicode
             textoCifrado += chr(c)
 
         self.textoCifrado = textoCifrado
@@ -87,9 +94,13 @@ class Cifra:
         n = self.chavepublica[1]
         textoDecifrado = ""
 
+        # Para letra do texto decifrado
         for letra in self.textoCifrado:
+            # Pego seu valor inteiro de acordo com a tabela unicode
             uni_ordem = ord(letra)
+            # Calculo o caractere claro
             m = (uni_ordem ** d) % n
+            # Insiro no texto
             textoDecifrado += chr(m)
 
         self.textoDecifrado = textoDecifrado
@@ -101,7 +112,6 @@ class Cifra:
 
     def salvarDecifrado(self):
         arquivoDecifrado = open(os.path.join(self.getDiretorio(), "Criptografia RSA - Texto Decifrado - " + self.getNomeArquivo()), "w")
-        # Trata barra invertida
         arquivoDecifrado.write(self.textoDecifrado)
 
     # Retorna diretório do arquivo contendo o texto claro
@@ -112,6 +122,7 @@ class Cifra:
     def getNomeArquivo(self):
         return os.path.basename(self.caminho)
 
+    # Calcula o MDC entre dois números
     def mdc(self, a, b):
         if a < b:
             a, b = b, a
@@ -120,11 +131,3 @@ class Cifra:
             a, b = b, a % b
 
         return a
-
-    def getExpBits(self, n):
-        exp = 1
-        while(True):
-            pot = 2 ** exp
-            if pot > n:
-                return exp - 1
-            exp += 1
