@@ -46,35 +46,11 @@ class View:
             font=self.fonteLabel,
             wraplength=500)
 
-        self.lblModulo = Label(
-            frameDadosChave,
-            text="Módulo:",
-            font=fonteChave)
-
-        self.lblPublica = Label(
-            frameDadosChave,
-            text="Chave Pública:",
-            font=fonteChave)
-
-        self.lblPrivada = Label(
-            frameDadosChave,
-            text="Chave Privada:",
-            font=fonteChave)
-
-        self.lblValorModulo = Label(
-            frameDadosChave,
-            text="-",
-            font=fonteChave)
-
-        self.lblValorPublica = Label(
-            frameDadosChave,
-            text="-",
-            font=fonteChave)
-
-        self.lblValorPrivada = Label(
-            frameDadosChave,
-            text="-",
-            font=fonteChave)
+        self.lblChave = Label(
+            self.view,
+            text="Selecione o Arquivo Com A Chave Pública:",
+            font=self.fonteLabel,
+            wraplength=500)
 
         self.lblP.grid(
             row = 0,
@@ -86,21 +62,14 @@ class View:
             column = 0,)
 
         self.lblArquivo.grid(
-            row = 5,
+            row = 7,
             column = 0,
             columnspan = 2)
 
-        self.lblModulo.pack(side = tkinter.LEFT)
-
-        self.lblValorModulo.pack(side = tkinter.LEFT)
-
-        self.lblPublica.pack(side = tkinter.LEFT)
-
-        self.lblValorPublica.pack(side = tkinter.LEFT)
-
-        self.lblPrivada.pack(side = tkinter.LEFT)
-
-        self.lblValorPrivada.pack(side = tkinter.LEFT)
+        self.lblChave.grid(
+            row = 5,
+            column = 0,
+            columnspan = 2)
 
         # Criando entrada de texto
         self.txtP = Entry(
@@ -130,7 +99,7 @@ class View:
             sticky="ew")
 
         Separator(self.view).grid(
-            row = 7,
+            row = 9,
             column = 0,
             columnspan = 2,
             padx = 10,
@@ -152,9 +121,20 @@ class View:
 
         Button(
             self.view,
-            text="Abrir Tela de Seleção",
+            text="Abrir Tela de Seleção Para Texto Claro",
             font=self.fonteButton,
-            command=self.abrirFileDialog).grid(
+            command=self.abrirFileDialogTextoClaro).grid(
+                row = 8,
+                column = 0,
+                columnspan = 2,
+                sticky="ew",
+                padx = 15)
+
+        Button(
+            self.view,
+            text="Abrir Tela de Seleção Para Chave",
+            font=self.fonteButton,
+            command=self.abrirFileDialogChavePublica).grid(
                 row = 6,
                 column = 0,
                 columnspan = 2,
@@ -166,7 +146,7 @@ class View:
             text="Cifrar",
             font=self.fonteButton,
             command=self.cifrar).grid(
-                row = 8,
+                row = 10,
                 column = 0,
                 columnspan = 2,
                 sticky="ew",
@@ -189,20 +169,30 @@ class View:
     def iniciar(self):
         self.view.mainloop()
 
-    # Abre tela para escolher arquivo
-    def abrirFileDialog(self):
+    # Abre tela para escolher arquivo com texto claro
+    def abrirFileDialogTextoClaro(self):
         user_dir = str(Path.home())
-        self.view.caminho = filedialog.askopenfilename(initialdir = user_dir,title = "Selecione O Texto",filetypes = [("Arquivos txt","*.txt")])
-        if len(self.view.caminho) != 0:
-            self.lblArquivo["text"] = self.view.caminho
-            self.controller.cifra.caminho = self.view.caminho
+        self.view.caminhoTextoClaro = filedialog.askopenfilename(initialdir = user_dir,title = "Selecione O Texto",filetypes = [("Arquivos txt","*.txt")])
+        if len(self.view.caminhoTextoClaro) != 0:
+            self.lblArquivo["text"] = self.view.caminhoTextoClaro
+            self.controller.cifra.caminho = self.view.caminhoTextoClaro
+
+    # Abre tela para escolher arquivo com chave pública
+    def abrirFileDialogChavePublica(self):
+        user_dir = str(Path.home())
+        self.view.caminhoChavePublica = filedialog.askopenfilename(initialdir = user_dir,title = "Selecione A Chave Pública",filetypes = [("Arquivos txt","*.txt")])
+        if len(self.view.caminhoChavePublica) != 0:
+            self.lblChave["text"] = self.view.caminhoChavePublica
+            self.controller.cifra.caminhoChavePublica = self.view.caminhoChavePublica
 
     def gerarChaves(self):
         P = self.txtP.get()
         Q = self.txtQ.get()
 
         try:
-            self.controller.gerarChaves(P, Q)
+            result = self.controller.gerarChaves(P, Q)
+            if result == True:
+                messageBox = MessageBox("Chaves Geradas Com Sucesso", "Chave Pública Salva Em " + str(Path.home()), None)
         except ValueError as ve:
             messageBox = MessageBox("Erro ao Executar Cifragem", ve.args[0], None)
             print(ve.args)
@@ -211,6 +201,8 @@ class View:
     def cifrar(self):
         try:
             self.controller.carregarTextoClaro()
+            self.controller.carregarChaves()
+
             self.controller.cifrar()
             self.controller.decifrar()
 
@@ -228,14 +220,7 @@ class View:
     # Reseta os campos da view e o modelo no controle
     def reset(self):
         self.lblArquivo["text"] = "Selecione o Arquivo Com o Texto Claro:"
+        self.lblChave["text"] = "Selecione o Arquivo Com A Chave Pública:"
         self.txtP.delete(0, "end")
         self.txtQ.delete(0, "end")
-        self.lblValorModulo["text"] = "-"
-        self.lblValorPrivada["text"] = "-"
-        self.lblValorPublica["text"] = "-"
         self.controller.reset()
-
-    def atualizaLabelChave(self, pub, priv, mod):
-        self.lblValorModulo["text"] = mod
-        self.lblValorPrivada["text"] = priv
-        self.lblValorPublica["text"] = pub

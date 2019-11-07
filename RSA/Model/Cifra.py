@@ -3,10 +3,14 @@ from math import fmod
 
 class Cifra:
     def __init__(self):
+        path = os.path.expanduser("~/Documents")
+
         self.textoClaro = ""
         self.textoCifrado = ""
         self.textoDecifrado = ""
         self.caminho = ""
+        self.caminhoChavePublica = ""
+        self.caminhoChavePrivada = os.path.join(path, "Criptografia RSA - Chave Privada.txt")
         self.p = 0
         self.q = 0
         self.n = 0
@@ -22,14 +26,11 @@ class Cifra:
             if self.mdc(e, self.phi) == 1:
                 break
 
-        self.chavepublica = (e, self.n)
-
         return (e, self.n)
 
-    def gerarChavePrivada(self):
+    def gerarChavePrivada(self, e):
         # Gerando chave privada usando o Algoritmo Euclidiano Estendido
         # (link @ https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm)
-        e = self.chavepublica[0]
         r0, r1 = min(e, self.phi), max(e, self.phi)
         s0, s1 = 0, 1
         t0, t1 = 1, 0
@@ -55,8 +56,6 @@ class Cifra:
         
         d = t0 % self.phi
 
-        self.chaveprivada = (d, self.n)
-
         return (d, self.n)
 
     def carregarTextoClaro(self):
@@ -73,12 +72,39 @@ class Cifra:
 
         arquivo.close()
 
+    def carregarChaves(self):
+        if len(self.caminhoChavePublica) == 0:
+            raise ValueError("Escolha Um Arquivo Com A Chave Pública!")
+
+        arquivoPublica = io.open(self.caminhoChavePublica, "rt")
+        arquivoPrivada = io.open(self.caminhoChavePrivada, "rt")
+        publica = arquivoPublica.read()
+        privada = arquivoPrivada.read()
+
+        if len(publica.strip()) == 0:
+            raise ValueError("A Chave Pública Está Vazia!")
+
+        if len(privada.strip()) == 0:
+            raise ValueError("A Chave Privada Está Vazia!")
+
+        publica = publica.split(" ")
+        privada = privada.split(" ")
+
+        self.chavepublica = (int(publica[0]), int(publica[1]))
+        self.chaveprivada = (int(privada[0]), int(privada[1]))
+
+        print(self.chavepublica)
+        print(self.chaveprivada)
+
+        arquivoPublica.close()
+        arquivoPrivada.close()
+
     def cifrar(self):
         e = self.chavepublica[0]
         n = self.chavepublica[1]
         textoCifrado = ""
 
-        # Para letra do texto claro
+        # Para cada caractere do texto claro
         for letra in self.textoClaro:
             # Pego seu valor inteiro de acordo com a tabela unicode
             uni_ordem = ord(letra)
@@ -94,7 +120,7 @@ class Cifra:
         n = self.chavepublica[1]
         textoDecifrado = ""
 
-        # Para letra do texto decifrado
+        # Para cada caractere do texto decifrado
         for letra in self.textoCifrado:
             # Pego seu valor inteiro de acordo com a tabela unicode
             uni_ordem = ord(letra)

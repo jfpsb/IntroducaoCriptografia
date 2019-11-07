@@ -1,4 +1,6 @@
 from Model.Cifra import Cifra
+import os
+from pathlib import Path
 
 class Controller:
     def __init__(self, view):
@@ -36,9 +38,24 @@ class Controller:
         self.cifra.phi = (p - 1) * (q - 1)
 
         pubk = self.cifra.gerarChavePublica()
-        privk = self.cifra.gerarChavePrivada()
+        privk = self.cifra.gerarChavePrivada(pubk[0])
 
-        self.view.atualizaLabelChave(pubk[0], privk[0], privk[1])
+        self.salvarChavePublica(pubk)
+        self.salvarChavePrivada(privk)
+
+        return True
+
+    def salvarChavePublica(self, chave):
+        user_dir = str(Path.home())
+        arquivo = open(os.path.join(user_dir, "Criptografia RSA - Chave Pública.txt"), "w")
+        arquivo.write(str(chave[0]) + " " + str(chave[1]))
+        arquivo.close()
+
+    def salvarChavePrivada(self, chave):
+        path = os.path.expanduser("~/Documents")
+        arquivo = open(os.path.join(path, "Criptografia RSA - Chave Privada.txt"), "w")
+        arquivo.write(str(chave[0]) + " " + str(chave[1]))
+        arquivo.close()
 
     def cifrar(self):
         if len(self.cifra.caminho) == 0:
@@ -60,6 +77,9 @@ class Controller:
 
     def carregarTextoClaro(self):
         self.cifra.carregarTextoClaro()
+
+    def carregarChaves(self):
+        self.cifra.carregarChaves()
 
     def isPrime(self, n):
         if n > 1:
