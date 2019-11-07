@@ -1,4 +1,4 @@
-import io, os
+import io, os, random
 from math import fmod
 
 class Cifra:
@@ -15,7 +15,8 @@ class Cifra:
         self.chaveprivada = None
 
     def gerarChavePublica(self):
-        for e in range(3, self.phi):
+        while(True):
+            e = random.randrange(3, self.phi)
             if self.mdc(e, self.phi) == 1:
                 break
 
@@ -59,7 +60,7 @@ class Cifra:
         if len(self.caminho) == 0:
             raise ValueError("Escolha Um Arquivo Com Texto Claro!")
 
-        arquivo = io.open(self.caminho, "rb")
+        arquivo = io.open(self.caminho, "rt", encoding="utf-8")
         texto = arquivo.read()
 
         if len(texto.strip()) == 0:
@@ -79,7 +80,7 @@ class Cifra:
             c = (uni_ordem ** e) % n
             textoCifrado += chr(c)
 
-        self.textoCifrado = textoCifrado.strip()
+        self.textoCifrado = textoCifrado
 
     def decifrar(self):
         d = self.chaveprivada[0]
@@ -101,7 +102,7 @@ class Cifra:
     def salvarDecifrado(self):
         arquivoDecifrado = open(os.path.join(self.getDiretorio(), "Criptografia RSA - Texto Decifrado - " + self.getNomeArquivo()), "w")
         # Trata barra invertida
-        arquivoDecifrado.write(self.textoDecifrado.encode("unicode-escape").decode("ascii"))
+        arquivoDecifrado.write(self.textoDecifrado)
 
     # Retorna diretório do arquivo contendo o texto claro
     def getDiretorio(self):
@@ -119,3 +120,11 @@ class Cifra:
             a, b = b, a % b
 
         return a
+
+    def getExpBits(self, n):
+        exp = 1
+        while(True):
+            pot = 2 ** exp
+            if pot > n:
+                return exp - 1
+            exp += 1

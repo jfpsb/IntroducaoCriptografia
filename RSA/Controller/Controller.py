@@ -27,6 +27,9 @@ class Controller:
         if not self.isPrime(q):
             raise ValueError("O Valor de Q Precisa Ser um Número Primo!")
 
+        if p * q < 256:
+            raise ValueError("O Valor do Módulo Precisa Ser Maior Que 256")
+
         self.cifra.p = p
         self.cifra.q = q
         self.cifra.n = p * q
