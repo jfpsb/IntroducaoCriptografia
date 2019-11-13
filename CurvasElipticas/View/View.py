@@ -1,5 +1,6 @@
 from Controller.Controller import Controller
 from Model.Cifra import Cifra
+from Model.Ponto import Ponto
 import tkinter
 from tkinter import *
 from tkinter import filedialog
@@ -38,9 +39,14 @@ class View:
             text="Informe o Número E:",
             font=self.fonteLabel)
 
-        self.lblK = Label(
+        self.lblKa = Label(
             self.view,
-            text="Informe o Valor de k:",
+            text="Informe o Valor de Ka:",
+            font=self.fonteLabel)
+
+        self.lblKb = Label(
+            self.view,
+            text="Informe o Valor de Kb:",
             font=self.fonteLabel)
 
         self.lblArquivo = Label(
@@ -70,8 +76,13 @@ class View:
             column = 0,
             ipady = 5)
 
-        self.lblK.grid(
+        self.lblKa.grid(
             row = 3,
+            column = 0,
+            ipady = 5)
+
+        self.lblKb.grid(
+            row = 4,
             column = 0,
             ipady = 5)
 
@@ -98,7 +109,11 @@ class View:
             self.view,
             font=fonteEntry)
 
-        self.txtK = Entry(
+        self.txtKa = Entry(
+            self.view,
+            font=fonteEntry)
+
+        self.txtKb = Entry(
             self.view,
             font=fonteEntry)
 
@@ -117,13 +132,18 @@ class View:
             column = 1,
             padx = 5)
 
-        self.txtK.grid(
+        self.txtKa.grid(
             row = 3,
             column = 1,
             padx = 5)
 
-        Separator(self.view).grid(
+        self.txtKb.grid(
             row = 4,
+            column = 1,
+            padx = 5)
+
+        Separator(self.view).grid(
+            row = 6,
             column = 0,
             columnspan = 2,
             padx = 10,
@@ -141,10 +161,10 @@ class View:
         # Criando botões
         Button(
             self.view,
-            text="Gerar Chave",
+            text="Gerar Chaves",
             font=self.fonteButton,
             command=self.gerarChaves).grid(
-                row = 4,
+                row = 5,
                 column = 0,
                 columnspan = 2,
                 sticky="ew",
@@ -220,14 +240,17 @@ class View:
     # Chama função que gera as chaves públicas e privadas
     def gerarChaves(self):
         p = self.txtP.get()
-        q = self.txtQ.get()
+        e = self.txtE.get()
+        d = self.txtD.get()
+        ka = self.txtKa.get()
+        kb = self.txtKb.get()
 
         try:
-            result = self.controller.gerarChaves(p, q)
+            result = self.controller.gerarChaves(p, e, d, ka, kb)
             if result == True:
                 messageBox = MessageBox("Chaves Geradas Com Sucesso", "Chave Pública Salva Em " + str(Path.home()), None)
         except ValueError as ve:
-            messageBox = MessageBox("Erro ao Executar Cifragem", ve.args[0], None)
+            messageBox = MessageBox("Erro ao Gerar Chaves", ve.args[0], None)
             print(ve.args)
 
     # Função executada ao apertar botão de cifrar

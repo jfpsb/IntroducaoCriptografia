@@ -1,4 +1,6 @@
-import io, os, random
+import io
+import os
+import random
 from pathlib import Path
 from Model.Ponto import Ponto
 
@@ -11,14 +13,18 @@ class Cifra:
         self.textoCifrado = ""
         self.textoDecifrado = ""
         self.caminho = ""
-        self.caminhoChavePublica = ""
+        self.caminhoChavePublica = os.path.join(Path.home(), "Criptografia de Curvas Elípticas - Chave Pública.txt")
         self.caminhoChavePrivada = os.path.join(path, "Criptografia de Curvas Elípticas - Chave Privada.txt")
         self.p = 0
         self.e = 0
         self.d = 0
-        #self.pontoSatisfatorio
+        self.Q = None
+        self.ka = 0
+        self.kb = 0
+        self.Ra = None
+        self.Rb = None
 
-    # Retorna se o módulo da equação retorna zero. Se retornar zero então os
+    # Retorna se o módulo da equação retorna zero.  Se retornar zero então os
     # valores nos dois lados da equação são iguais
     def moduloEquacao(self, x, y):
         result = ((y ** 2) - (x ** 3) - (self.d * x) - self.e)
@@ -29,21 +35,20 @@ class Cifra:
         return result % self.p == 0
 
 
-    def acharPontoSatisfatorio(self):
+    # Encontra o ponto Q presente na curva de forma pseudo aleatória
+    def acharPontoQ(self):
         while True:
             x = random.randrange(0, self.p)
             y = random.randrange(0, self.p)
             if self.moduloEquacao(x, y):
-                self.pontoSatisfatorio = Ponto(x, y)
+                self.Q = Ponto(x, y, self.p, self.d)
                 break
 
     # Gera a chave pública
     def gerarChavePublica(self):
-        pass
-
-    # Gera a chave privada
-    def gerarChavePrivada(self, e):
-        pass
+        Ra = self.Q * self.ka
+        Rb = self.Q * self.kb
+        return (Ra, Rb)
 
     # Carrego texto claro no modelo
     def carregarTextoClaro(self):
@@ -62,9 +67,6 @@ class Cifra:
 
     # Carrego as chaves de seus arquivos
     def carregarChaves(self):
-        if len(self.caminhoChavePublica) == 0:
-            raise ValueError("Escolha Um Arquivo Com A Chave Pública!")
-
         arquivoPublica = io.open(self.caminhoChavePublica, "rt")
         arquivoPrivada = io.open(self.caminhoChavePrivada, "rt")
         publica = arquivoPublica.read()
@@ -76,15 +78,16 @@ class Cifra:
         if len(privada.strip()) == 0:
             raise ValueError("A Chave Privada Está Vazia!")
 
-        # As chaves são dois valores separados por um espaço
-        publica = publica.split(" ")
+        publica = publica.splitlines()
         privada = privada.split(" ")
 
-        self.chavepublica = (int(publica[0]), int(publica[1]))
-        self.chaveprivada = (int(privada[0]), int(privada[1]))
+        chavepublica1 = publica[0].split(" ")
+        chavepublica2 = publica[1].split(" ")
 
-        print(self.chavepublica)
-        print(self.chaveprivada)
+        self.Ra = (int(chavepublica1[0]), int(chavepublica1[1]))
+        self.Rb = (int(chavepublica2[0]), int(chavepublica2[1]))
+        self.ka = int(privada[0])
+        self.kb = int(privada[1])
 
         arquivoPublica.close()
         arquivoPrivada.close()
