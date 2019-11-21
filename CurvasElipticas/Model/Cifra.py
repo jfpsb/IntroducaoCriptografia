@@ -84,8 +84,8 @@ class Cifra:
         chavepublica1 = publica[0].split(" ")
         chavepublica2 = publica[1].split(" ")
 
-        self.Ra = (int(chavepublica1[0]), int(chavepublica1[1]))
-        self.Rb = (int(chavepublica2[0]), int(chavepublica2[1]))
+        self.Ra = Ponto(int(chavepublica1[0]), int(chavepublica1[1]), int(chavepublica1[2]), int(chavepublica1[3]))
+        self.Rb = Ponto(int(chavepublica2[0]), int(chavepublica2[1]), int(chavepublica1[2]), int(chavepublica1[3]))
         self.ka = int(privada[0])
         self.kb = int(privada[1])
 
@@ -93,17 +93,19 @@ class Cifra:
         arquivoPrivada.close()
 
     # Função chamada para cifrar
+    # De A para B
     def cifrar(self):
-        e = self.chavepublica[0]
-        n = self.chavepublica[1]
         textoCifrado = ""
 
         # Para cada caractere do texto claro
         for letra in self.textoClaro:
             # Pego seu valor inteiro de acordo com a tabela unicode
             uni_ordem = ord(letra)
+            # Uso este valor para achar o ponto Pm na curva
+            Pm = self.Q * uni_ordem
             # Calculo o caractere criptografado
-            c = (uni_ordem ** e) % n
+            c1 = self.Q * self.ka
+            c2 = Pm + (self.Rb * self.ka)
             # Insiro no texto como uma letra da tabela unicode
             textoCifrado += chr(c)
 

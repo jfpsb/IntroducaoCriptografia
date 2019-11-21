@@ -27,8 +27,8 @@ class Controller:
         if not p.isdigit():
             raise ValueError("Digite Um Valor Válido Para P!")
 
-        if not e.isdigit():
-            raise ValueError("Digite Um Valor Válido Para E!")
+        #if not e.isdigit():
+         #   raise ValueError("Digite Um Valor Válido Para E!")
 
         if not d.isdigit():
             raise ValueError("Digite Um Valor Válido Para D!")
@@ -73,7 +73,7 @@ class Controller:
         Ra.imprimir()
         Rb.imprimir()
 
-        arquivo.write(str(Ra.x) + " " + str(Ra.y) + "\n" + str(Rb.x) + " " + str(Rb.y))
+        arquivo.write(str(Ra.x) + " " + str(Ra.y) + " " + str(Ra.p) + " " + str(Ra.d) +"\n" + str(Rb.x) + " " + str(Rb.y) + " " + str(Rb.p) + " " + str(Rb.d))
         arquivo.close()
 
     # Salva a chave privada em arquivo
@@ -90,7 +90,7 @@ class Controller:
         if len(self.cifra.caminho) == 0:
             raise ValueError("Escolha Um Arquivo Com Texto Claro!")
 
-        if self.cifra.chaveprivada is None or self.cifra.chavepublica is None:
+        if self.cifra.Ra is None or self.cifra.Rb is None:
             raise ValueError("As Chaves Não Foram Geradas!")
 
         self.cifra.cifrar()

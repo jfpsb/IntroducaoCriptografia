@@ -14,7 +14,7 @@ class View:
         # Criando objeto de janela
         self.view = tkinter.Tk()
         self.view.title("Criptografia De Curvas Elípticas")
-        self.view.resizable(1, 1)
+        self.view.resizable(0, 0)
         self.view.pack_propagate(0)
 
         #Estilos de fonte
@@ -57,7 +57,7 @@ class View:
 
         self.lblChave = Label(
             self.view,
-            text="Selecione o Arquivo Com A Chave Pública:",
+            text="Selecione o Arquivo Com As Chaves Públicas:",
             font=self.fonteLabel,
             wraplength=500)
 
@@ -87,12 +87,12 @@ class View:
             ipady = 5)
 
         self.lblArquivo.grid(
-            row = 7,
+            row = 9,
             column = 0,
             columnspan = 2)
 
         self.lblChave.grid(
-            row = 5,
+            row = 7,
             column = 0,
             columnspan = 2)
 
@@ -151,7 +151,7 @@ class View:
             sticky="ew")
 
         Separator(self.view).grid(
-            row = 9,
+            row = 12,
             column = 0,
             columnspan = 2,
             padx = 10,
@@ -176,29 +176,31 @@ class View:
             text="Abrir Tela de Seleção Para Texto Claro",
             font=self.fonteButton,
             command=self.abrirFileDialogTextoClaro).grid(
-                row = 8,
+                row = 10,
                 column = 0,
                 columnspan = 2,
                 sticky="ew",
-                padx = 15)
+                padx = 15,
+                pady = 5)
 
         Button(
             self.view,
             text="Abrir Tela de Seleção Para Chave",
             font=self.fonteButton,
             command=self.abrirFileDialogChavePublica).grid(
-                row = 6,
+                row = 8,
                 column = 0,
                 columnspan = 2,
                 sticky="ew",
-                padx = 15)
+                padx = 15,
+                pady = 5)
 
         Button(
             self.view,
             text="Cifrar/Decifrar",
             font=self.fonteButton,
             command=self.cifrar).grid(
-                row = 10,
+                row = 13,
                 column = 0,
                 columnspan = 2,
                 sticky="ew",
