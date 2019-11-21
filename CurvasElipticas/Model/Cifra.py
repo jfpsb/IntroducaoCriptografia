@@ -106,54 +106,59 @@ class Cifra:
         #Calculo tamanho do bloco
         tamanho_bloco = self.tamanho_bloco(self.Q.p)
 
+        # Para cada bloco do texto claro
         for i in range(0, len(bytesClaro), tamanho_bloco):
+            # Converto para int o caracteres binários presentes no bloco
             num = int(bytesClaro[i:i + tamanho_bloco], 2)
+            # Calculo Pm usando o num e o ponto público Q
             Pm = self.Q * num
-            Pm.imprimir()
+            # Calculo o membro C1 do conjunto de pontos criptografados
             c1 = self.Q * k
+            # Calculo o membro C2 do conjunto de pontos criptografados
             c2 = Pm + (self.Rb * k)
-            # Insiro no texto como uma letra da tabela unicode
+            # Adiciono em uma variável parcial os pontos C1 e C2 separados por espaço.
+            # No final de cada linha eu pulo a linha com um \n
             textoCifrado += str(c1.x) + " " + str(c1.y) + " " + str(c2.x) + " " + str(c2.y) + "\n"
 
-        # Para cada caractere do texto claro
-        #for letra in self.textoClaro:
-        #    # Pego seu valor inteiro de acordo com a tabela unicode
-        #    uni_ordem = ord(letra)
-        #    # Uso este valor para achar o ponto Pm na curva
-        #    Pm = self.Q * uni_ordem
-        #    # Calculo o caractere criptografado
-        #    c1 = self.Q * k
-        #    c2 = Pm + (self.Rb * k)
-        #    # Insiro no texto como uma letra da tabela unicode
-        #    textoCifrado += str(c1.x) + " " + str(c1.y) + " " + str(c2.x) + " " + str(c2.y) + "\n"
-
+        # Salvo o texto cifrado no modelo
         self.textoCifrado = textoCifrado
 
     # Função chamada para decifrar
     def decifrar(self):
+        # Pego as linhas com os pontos criptografados
         linhas = self.textoCifrado.splitlines()
+        # Calculo o tamanho do bloco
         tamanho_bloco = self.tamanho_bloco(self.Q.p)
+        # Variável que vai guardar parciais do texto decifrado
         textoDecifrado = ""
 
+        # Para cada linha do texto cifrado
         for linha in linhas:
+            # Recupero os pontos de cada linha, separados por espaço
             vals = linha.split()
+            # Crio o ponto c1
             c1 = Ponto(int(vals[0]), int(vals[1]), self.Ra.p, self.Ra.d)
+            # Crio o ponto c2
             c2 = Ponto(int(vals[2]), int(vals[3]), self.Ra.p, self.Ra.d)
 
+            # Calculo o ponto Pm usando a chave privada de B
             Pm = c2 - (c1 * self.kb)
 
-            for i in range(0, self.Q.p):
+            # Testo cada valor até p, multiplicando por pelo ponto público Q até encontrar um ponto igual a Pm.
+            # O inteiro resultante é o valor inteiro do bloco que foi criptografado
+            for i in range(1, self.Q.p):
                 p = self.Q * i
                 if Pm == p:
-                    print("--")
-                    Pm.imprimir()
                     break
 
-            binario = bin(i)[2:]
+            # Converto número encontrado em binário
+            binario = BitArray(bin(i)).bin
 
+            # Adiciono caracteres 0 no início do número binário se houver necessidade
             for i in range(0, tamanho_bloco - len(binario)):
                 binario = "0" + binario
 
+            # Guardo resultado parcial
             textoDecifrado += binario
 
         for i in range(0, len(textoDecifrado), 8):
