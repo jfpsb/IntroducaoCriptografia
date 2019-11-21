@@ -49,6 +49,11 @@ class View:
             text="Informe o Valor de Kb:",
             font=self.fonteLabel)
 
+        self.lblK = Label(
+            self.view,
+            text="Informe o Valor de K:",
+            font=self.fonteLabel)
+
         self.lblArquivo = Label(
             self.view,
             text="Selecione o Arquivo Com o Texto Claro:",
@@ -86,6 +91,11 @@ class View:
             column = 0,
             ipady = 5)
 
+        self.lblK.grid(
+            row = 11,
+            column = 0,
+            ipady = 5)
+
         self.lblArquivo.grid(
             row = 9,
             column = 0,
@@ -117,6 +127,10 @@ class View:
             self.view,
             font=fonteEntry)
 
+        self.txtK = Entry(
+            self.view,
+            font=fonteEntry)
+
         self.txtP.grid(
             row = 0,
             column = 1,
@@ -139,6 +153,11 @@ class View:
 
         self.txtKb.grid(
             row = 4,
+            column = 1,
+            padx = 5)
+
+        self.txtK.grid(
+            row = 11,
             column = 1,
             padx = 5)
 
@@ -258,10 +277,12 @@ class View:
     # Função executada ao apertar botão de cifrar
     def cifrar(self):
         try:
+            k = self.txtK.get()
+
             self.controller.carregarTextoClaro()
             self.controller.carregarChaves()
 
-            self.controller.cifrar()
+            self.controller.cifrar(k)
             self.controller.decifrar()
 
             self.controller.salvarCifrado()

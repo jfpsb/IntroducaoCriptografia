@@ -27,10 +27,10 @@ class Controller:
         if not p.isdigit():
             raise ValueError("Digite Um Valor Válido Para P!")
 
-        #if not e.isdigit():
-         #   raise ValueError("Digite Um Valor Válido Para E!")
+        if not e.replace("-", "").isdigit():
+            raise ValueError("Digite Um Valor Válido Para E!")
 
-        if not d.isdigit():
+        if not d.replace("-", "").isdigit():
             raise ValueError("Digite Um Valor Válido Para D!")
 
         if not ka.isdigit():
@@ -73,7 +73,9 @@ class Controller:
         Ra.imprimir()
         Rb.imprimir()
 
-        arquivo.write(str(Ra.x) + " " + str(Ra.y) + " " + str(Ra.p) + " " + str(Ra.d) +"\n" + str(Rb.x) + " " + str(Rb.y) + " " + str(Rb.p) + " " + str(Rb.d))
+        arquivo.write(str(self.cifra.Q.x) + " " + str(self.cifra.Q.y) + " " + str(self.cifra.Q.p) + " " + str(self.cifra.Q.d) + "\n")
+        arquivo.write(str(Ra.x) + " " + str(Ra.y) + " " + str(Ra.p) + " " + str(Ra.d) +"\n")
+        arquivo.write(str(Rb.x) + " " + str(Rb.y) + " " + str(Rb.p) + " " + str(Rb.d))
         arquivo.close()
 
     # Salva a chave privada em arquivo
@@ -86,14 +88,22 @@ class Controller:
         arquivo.close()
 
     # Chama função de cifrar do modelo
-    def cifrar(self):
+    def cifrar(self, k):
+        if len(k) == 0:
+            raise ValueError("Informe Um Valor Para K!")
+
+        if not k.isdigit():
+            raise ValueError("Informe Um Valor Válido Para K!")
+
         if len(self.cifra.caminho) == 0:
             raise ValueError("Escolha Um Arquivo Com Texto Claro!")
 
         if self.cifra.Ra is None or self.cifra.Rb is None:
             raise ValueError("As Chaves Não Foram Geradas!")
 
-        self.cifra.cifrar()
+        k = int(k)
+
+        self.cifra.cifrar(k)
 
     # Chama função de decifrar do modelo
     def decifrar(self):

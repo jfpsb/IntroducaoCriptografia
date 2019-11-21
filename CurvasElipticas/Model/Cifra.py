@@ -81,9 +81,11 @@ class Cifra:
         publica = publica.splitlines()
         privada = privada.split(" ")
 
-        chavepublica1 = publica[0].split(" ")
-        chavepublica2 = publica[1].split(" ")
+        valorQ = publica[0].split(" ")
+        chavepublica1 = publica[1].split(" ")
+        chavepublica2 = publica[2].split(" ")
 
+        self.Q = Ponto(int(valorQ[0]), int(valorQ[1]), int(valorQ[2]), int(valorQ[3]))
         self.Ra = Ponto(int(chavepublica1[0]), int(chavepublica1[1]), int(chavepublica1[2]), int(chavepublica1[3]))
         self.Rb = Ponto(int(chavepublica2[0]), int(chavepublica2[1]), int(chavepublica1[2]), int(chavepublica1[3]))
         self.ka = int(privada[0])
@@ -94,7 +96,7 @@ class Cifra:
 
     # Função chamada para cifrar
     # De A para B
-    def cifrar(self):
+    def cifrar(self, k):
         textoCifrado = ""
 
         # Para cada caractere do texto claro
@@ -104,29 +106,30 @@ class Cifra:
             # Uso este valor para achar o ponto Pm na curva
             Pm = self.Q * uni_ordem
             # Calculo o caractere criptografado
-            c1 = self.Q * self.ka
-            c2 = Pm + (self.Rb * self.ka)
+            c1 = self.Q * k
+            c2 = Pm + (self.Rb * k)
             # Insiro no texto como uma letra da tabela unicode
-            textoCifrado += chr(c)
+            textoCifrado += str(c1.x) + " " + str(c1.y) + " " + str(c2.x) + " " + str(c2.y) + "\n"
 
         self.textoCifrado = textoCifrado
 
     # Função chamada para decifrar
     def decifrar(self):
-        d = self.chaveprivada[0]
-        n = self.chavepublica[1]
-        textoDecifrado = ""
+        linhas = self.textoCifrado.splitlines()
 
-        # Para cada caractere do texto decifrado
-        for letra in self.textoCifrado:
-            # Pego seu valor inteiro de acordo com a tabela unicode
-            uni_ordem = ord(letra)
-            # Calculo o caractere claro
-            m = (uni_ordem ** d) % n
-            # Insiro no texto
-            textoDecifrado += chr(m)
+        for linha in linhas:
+            vals = linha.split()
+            c1 = Ponto(int(vals[0]), int(vals[1]), self.Ra.p, self.Ra.d)
+            c2 = Ponto(int(vals[2]), int(vals[3]), self.Ra.p, self.Ra.d)
 
-        self.textoDecifrado = textoDecifrado
+            Pm = c2 - (c1 * self.kb)
+
+            for i in range(2, 256):
+                p = self.Q * i
+                if Pm == p:
+                    break
+
+            print(chr(i))
 
     def salvarCifrado(self):
         arquivoCifrado = open(os.path.join(self.getDiretorio(), "Criptografia RSA - Texto Cifrado - " + self.getNomeArquivo()), "w")

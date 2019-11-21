@@ -15,13 +15,21 @@ class Ponto:
 
     # Sobrecarregando o operador aritmético + para somar dois pontos
     def __add__(self, value):
-        if self.x == value.x and self.y == -value.y:
+        zero = Ponto(0, 0, self.p, self.d)
+        
+        if self == zero:
+            return value
+
+        if value == zero:
             return self
+
+        if self.x == value.x and self.y == -value.y:
+            return zero
 
         lbd = self.valorLambda(value)
 
         if not lbd:
-            return self
+            return zero
 
         x = ((lbd ** 2) - self.x - value.x) % self.p
         y = (lbd * (self.x - x) - self.y) % self.p
