@@ -28,7 +28,7 @@ class Ponto:
 
         lbd = self.valorLambda(value)
 
-        if not lbd:
+        if lbd == "NaN":
             return zero
 
         x = ((lbd ** 2) - self.x - value.x) % self.p
@@ -44,28 +44,25 @@ class Ponto:
     # Sobrecarregando o operador aritmético * para multiplicar um ponto por um
     # inteiro
     def __mul__(self, value):
+        if value == 0:
+            return Ponto(0, 0, self.p, self.d)
+        if value == 1:
+            return self
         pontoinicial = Ponto(self.x, self.y, self.p, self.d)
         for i in range(value - 1):
             self += pontoinicial
         return self
 
-    # Sobrecarregando o operador aritmético * para multiplicar um inteiro por um
-    # ponto
-    def __rmul__(self, value):
-        for i in range(self - 1):
-            value += value
-        return value
-
     # Retorna valor de lambda
     def valorLambda(self, Q):
         if self == Q:
             if self.y == 0:
-                return False
+                return "NaN"
             dividendo = 3 * (self.x ** 2) + self.d
             divisor  = 2 * self.y
         else:
             if Q.x == self.x:
-                return False
+                return "NaN"
             dividendo = Q.y - self.y
             divisor = Q.x - self.x
 

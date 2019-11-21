@@ -301,5 +301,9 @@ class View:
         self.lblArquivo["text"] = "Selecione o Arquivo Com o Texto Claro:"
         self.lblChave["text"] = "Selecione o Arquivo Com A Chave Pública:"
         self.txtP.delete(0, "end")
-        self.txtQ.delete(0, "end")
+        self.txtD.delete(0, "end")
+        self.txtE.delete(0, "end")
+        self.txtKa.delete(0, "end")
+        self.txtKb.delete(0, "end")
+        self.txtK.delete(0, "end")
         self.controller.reset()

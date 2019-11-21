@@ -3,6 +3,7 @@ import os
 import random
 from pathlib import Path
 from Model.Ponto import Ponto
+from bitstring import BitArray
 
 class Cifra:
     def __init__(self):
@@ -55,12 +56,13 @@ class Cifra:
         if len(self.caminho) == 0:
             raise ValueError("Escolha Um Arquivo Com Texto Claro!")
 
-        arquivo = io.open(self.caminho, "rt", encoding="utf-8")
+        arquivo = io.open(self.caminho, "rb")
         texto = arquivo.read()
 
         if len(texto.strip()) == 0:
             raise ValueError("O Arquivo Está Vazio!")
 
+        # Espaços são substituídos pela letra X e o texto inteiro é colocado em maiúsculo
         self.textoClaro = texto
 
         arquivo.close()
@@ -99,23 +101,39 @@ class Cifra:
     def cifrar(self, k):
         textoCifrado = ""
 
-        # Para cada caractere do texto claro
-        for letra in self.textoClaro:
-            # Pego seu valor inteiro de acordo com a tabela unicode
-            uni_ordem = ord(letra)
-            # Uso este valor para achar o ponto Pm na curva
-            Pm = self.Q * uni_ordem
-            # Calculo o caractere criptografado
+        # Pego a representção do texto em binário
+        bytesClaro = BitArray(self.textoClaro).bin        
+        #Calculo tamanho do bloco
+        tamanho_bloco = self.tamanho_bloco(self.Q.p)
+
+        for i in range(0, len(bytesClaro), tamanho_bloco):
+            num = int(bytesClaro[i:i + tamanho_bloco], 2)
+            Pm = self.Q * num
+            Pm.imprimir()
             c1 = self.Q * k
             c2 = Pm + (self.Rb * k)
             # Insiro no texto como uma letra da tabela unicode
             textoCifrado += str(c1.x) + " " + str(c1.y) + " " + str(c2.x) + " " + str(c2.y) + "\n"
+
+        # Para cada caractere do texto claro
+        #for letra in self.textoClaro:
+        #    # Pego seu valor inteiro de acordo com a tabela unicode
+        #    uni_ordem = ord(letra)
+        #    # Uso este valor para achar o ponto Pm na curva
+        #    Pm = self.Q * uni_ordem
+        #    # Calculo o caractere criptografado
+        #    c1 = self.Q * k
+        #    c2 = Pm + (self.Rb * k)
+        #    # Insiro no texto como uma letra da tabela unicode
+        #    textoCifrado += str(c1.x) + " " + str(c1.y) + " " + str(c2.x) + " " + str(c2.y) + "\n"
 
         self.textoCifrado = textoCifrado
 
     # Função chamada para decifrar
     def decifrar(self):
         linhas = self.textoCifrado.splitlines()
+        tamanho_bloco = self.tamanho_bloco(self.Q.p)
+        textoDecifrado = ""
 
         for linha in linhas:
             vals = linha.split()
@@ -124,12 +142,22 @@ class Cifra:
 
             Pm = c2 - (c1 * self.kb)
 
-            for i in range(2, 256):
+            for i in range(0, self.Q.p):
                 p = self.Q * i
                 if Pm == p:
+                    print("--")
+                    Pm.imprimir()
                     break
 
-            print(chr(i))
+            binario = bin(i)[2:]
+
+            for i in range(0, tamanho_bloco - len(binario)):
+                binario = "0" + binario
+
+            textoDecifrado += binario
+
+        for i in range(0, len(textoDecifrado), 8):
+            self.textoDecifrado += chr(int(textoDecifrado[i:i+8], 2))
 
     def salvarCifrado(self):
         arquivoCifrado = open(os.path.join(self.getDiretorio(), "Criptografia RSA - Texto Cifrado - " + self.getNomeArquivo()), "w")
@@ -148,12 +176,8 @@ class Cifra:
     def getNomeArquivo(self):
         return os.path.basename(self.caminho)
 
-    # Calcula o MDC entre dois números
-    def mdc(self, a, b):
-        if a < b:
-            a, b = b, a
-
-        while b != 0:
-            a, b = b, a % b
-
-        return a
+    def tamanho_bloco(self, p):
+        for blockSize in range(0, p):
+            if 2 ** (blockSize + 1) > p:
+                break
+        return blockSize
