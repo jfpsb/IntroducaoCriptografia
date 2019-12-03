@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from view.View import View
+from View import View
 
 # Inicia view
 view = View()

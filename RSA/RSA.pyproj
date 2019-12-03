@@ -21,25 +21,17 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Controller\Controller.py">
+    <Compile Include="Controller.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controller\__init__.py" />
-    <Compile Include="Model\Cifra.py">
+    <Compile Include="Cifra.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\__init__.py" />
     <Compile Include="RSA.py" />
-    <Compile Include="View\MessageBox.py" />
-    <Compile Include="View\View.py">
+    <Compile Include="MessageBox.py" />
+    <Compile Include="View.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\__init__.py" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-    <Folder Include="Controller\" />
-    <Folder Include="View\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
