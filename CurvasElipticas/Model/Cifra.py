@@ -16,9 +16,9 @@ class Cifra:
         self.caminho = ""
         self.caminhoChavePublica = os.path.join(Path.home(), "Criptografia de Curvas Elípticas - Chave Pública.txt")
         self.caminhoChavePrivada = os.path.join(path, "Criptografia de Curvas Elípticas - Chave Privada.txt")
-        self.p = 0
-        self.e = 0
-        self.d = 0
+        self.p = 23
+        self.e = 1
+        self.d = 1
         self.Q = None
         self.ka = 0
         self.kb = 0
@@ -102,16 +102,17 @@ class Cifra:
         textoCifrado = ""
 
         # Pego a representção do texto em binário
-        bytesClaro = BitArray(self.textoClaro).bin        
+        bitsClaro = BitArray(self.textoClaro).bin        
         #Calculo tamanho do bloco
         tamanho_bloco = self.tamanho_bloco(self.Q.p)
+        zero = Ponto(0, 0, self.p, self.d)
 
         # Para cada bloco do texto claro
-        for i in range(0, len(bytesClaro), tamanho_bloco):
+        for i in range(0, len(bitsClaro), tamanho_bloco):
             # Converto para int o caracteres binários presentes no bloco
-            num = int(bytesClaro[i:i + tamanho_bloco], 2)
+            num = int(bitsClaro[i:i + tamanho_bloco], 2)
             # Calculo Pm usando o num e o ponto público Q
-            Pm = self.Q * num
+            Pm = self.Q * (num + k)
             # Calculo o membro C1 do conjunto de pontos criptografados
             c1 = self.Q * k
             # Calculo o membro C2 do conjunto de pontos criptografados
@@ -124,13 +125,14 @@ class Cifra:
         self.textoCifrado = textoCifrado
 
     # Função chamada para decifrar
-    def decifrar(self):
+    def decifrar(self, k):
         # Pego as linhas com os pontos criptografados
         linhas = self.textoCifrado.splitlines()
         # Calculo o tamanho do bloco
         tamanho_bloco = self.tamanho_bloco(self.Q.p)
         # Variável que vai guardar parciais do texto decifrado
         textoDecifrado = ""
+        zero = Ponto(0, 0, self.p, self.d)
 
         # Para cada linha do texto cifrado
         for linha in linhas:
@@ -144,12 +146,18 @@ class Cifra:
             # Calculo o ponto Pm usando a chave privada de B
             Pm = c2 - (c1 * self.kb)
 
+            inteiroEncontrado = False
+
             # Testo cada valor até p, multiplicando por pelo ponto público Q até encontrar um ponto igual a Pm.
             # O inteiro resultante é o valor inteiro do bloco que foi criptografado
-            for i in range(1, self.Q.p):
-                p = self.Q * i
+            for i in range(1, tamanho_bloco ** 2):
+                p = self.Q * (i + k)
                 if Pm == p:
+                    inteiroEncontrado = True
                     break
+
+            if not inteiroEncontrado:
+                i = 0
 
             # Converto número encontrado em binário
             binario = BitArray(bin(i)).bin
@@ -165,12 +173,12 @@ class Cifra:
             self.textoDecifrado += chr(int(textoDecifrado[i:i+8], 2))
 
     def salvarCifrado(self):
-        arquivoCifrado = open(os.path.join(self.getDiretorio(), "Criptografia RSA - Texto Cifrado - " + self.getNomeArquivo()), "w")
+        arquivoCifrado = open(os.path.join(self.getDiretorio(), "Criptografia de Curvas Elípticas - Texto Cifrado - " + self.getNomeArquivo()), "w")
         # Trata barra invertida
-        arquivoCifrado.write(self.textoCifrado.encode("unicode-escape").decode("ascii"))
+        arquivoCifrado.write(self.textoCifrado)
 
     def salvarDecifrado(self):
-        arquivoDecifrado = open(os.path.join(self.getDiretorio(), "Criptografia RSA - Texto Decifrado - " + self.getNomeArquivo()), "w")
+        arquivoDecifrado = open(os.path.join(self.getDiretorio(), "Criptografia de Curvas Elípticas - Texto Decifrado - " + self.getNomeArquivo()), "w")
         arquivoDecifrado.write(self.textoDecifrado)
 
     # Retorna diretório do arquivo contendo o texto claro

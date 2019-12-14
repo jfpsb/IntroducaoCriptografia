@@ -24,21 +24,6 @@ class View:
         self.fonteButton = ("Century Gothic", 14, "bold")
 
         # Criando labels
-        self.lblP = Label(
-            self.view,
-            text="Informe o Número P:",
-            font=self.fonteLabel)
-
-        self.lblD = Label(
-            self.view,
-            text="Informe o Número D:",
-            font=self.fonteLabel)
-
-        self.lblE = Label(
-            self.view,
-            text="Informe o Número E:",
-            font=self.fonteLabel)
-
         self.lblKa = Label(
             self.view,
             text="Informe o Valor de Ka:",
@@ -66,21 +51,6 @@ class View:
             font=self.fonteLabel,
             wraplength=500)
 
-        self.lblP.grid(
-            row = 0,
-            column = 0,
-            ipady = 5)
-
-        self.lblD.grid(
-            row = 1,
-            column = 0,
-            ipady = 5)
-
-        self.lblE.grid(
-            row = 2,
-            column = 0,
-            ipady = 5)
-
         self.lblKa.grid(
             row = 3,
             column = 0,
@@ -107,18 +77,6 @@ class View:
             columnspan = 2)
 
         # Criando entrada de texto
-        self.txtP = Entry(
-            self.view,
-            font=fonteEntry)
-
-        self.txtD = Entry(
-            self.view,
-            font=fonteEntry)
-
-        self.txtE = Entry(
-            self.view,
-            font=fonteEntry)
-
         self.txtKa = Entry(
             self.view,
             font=fonteEntry)
@@ -130,21 +88,6 @@ class View:
         self.txtK = Entry(
             self.view,
             font=fonteEntry)
-
-        self.txtP.grid(
-            row = 0,
-            column = 1,
-            padx = 5)
-
-        self.txtD.grid(
-            row = 1,
-            column = 1,
-            padx = 5)
-
-        self.txtE.grid(
-            row = 2,
-            column = 1,
-            padx = 5)
 
         self.txtKa.grid(
             row = 3,
@@ -260,14 +203,11 @@ class View:
 
     # Chama função que gera as chaves públicas e privadas
     def gerarChaves(self):
-        p = self.txtP.get()
-        e = self.txtE.get()
-        d = self.txtD.get()
         ka = self.txtKa.get()
         kb = self.txtKb.get()
 
         try:
-            result = self.controller.gerarChaves(p, e, d, ka, kb)
+            result = self.controller.gerarChaves(ka, kb)
             if result == True:
                 messageBox = MessageBox("Chaves Geradas Com Sucesso", "Chave Pública Salva Em " + str(Path.home()), None)
         except ValueError as ve:
@@ -283,7 +223,7 @@ class View:
             self.controller.carregarChaves()
 
             self.controller.cifrar(k)
-            self.controller.decifrar()
+            self.controller.decifrar(k)
 
             self.controller.salvarCifrado()
             self.controller.salvarDecifrado()
@@ -300,9 +240,6 @@ class View:
     def reset(self):
         self.lblArquivo["text"] = "Selecione o Arquivo Com o Texto Claro:"
         self.lblChave["text"] = "Selecione o Arquivo Com A Chave Pública:"
-        self.txtP.delete(0, "end")
-        self.txtD.delete(0, "end")
-        self.txtE.delete(0, "end")
         self.txtKa.delete(0, "end")
         self.txtKb.delete(0, "end")
         self.txtK.delete(0, "end")

@@ -18,9 +18,13 @@ class Ponto:
         zero = Ponto(0, 0, self.p, self.d)
         
         if self == zero:
+            if value.y < 0:
+                value.y += self.p
             return value
 
         if value == zero:
+            if self.y < 0:
+                self.y += self.p
             return self
 
         if self.x == value.x and self.y == -value.y:
@@ -34,11 +38,16 @@ class Ponto:
         x = ((lbd ** 2) - self.x - value.x) % self.p
         y = (lbd * (self.x - x) - self.y) % self.p
 
+        if y < 0:
+            y += self.p
+
         return Ponto(int(x), int(y), self.p, self.d)
 
     # Sobrecarregando o operador aritmético - para subtrair dois pontos
     def __sub__(self, value):
         p = Ponto(value.x, -value.y, value.p, value.d)
+        if p.y < 0:
+            p.y += self.p
         return self + p
 
     # Sobrecarregando o operador aritmético * para multiplicar um ponto por um

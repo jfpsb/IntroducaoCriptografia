@@ -8,30 +8,12 @@ class Controller:
         self.view = view
 
     # Gera as chaves pública e privada
-    def gerarChaves(self, p, e, d, ka, kb):
-        if len(p) == 0:
-            raise ValueError("Valor de P Não Pode Ser Vazio!")
-
-        if len(e) == 0:
-            raise ValueError("Valor de E Não Pode Ser Vazio!")
-
-        if len(d) == 0:
-            raise ValueError("Valor de D Não Pode Ser Vazio!")
-
+    def gerarChaves(self, ka, kb):
         if len(ka) == 0:
             raise ValueError("Valor de Ka Não Pode Ser Vazio!")
 
         if len(kb) == 0:
             raise ValueError("Valor de Kb Não Pode Ser Vazio!")
-
-        if not p.isdigit():
-            raise ValueError("Digite Um Valor Válido Para P!")
-
-        if not e.replace("-", "").isdigit():
-            raise ValueError("Digite Um Valor Válido Para E!")
-
-        if not d.replace("-", "").isdigit():
-            raise ValueError("Digite Um Valor Válido Para D!")
 
         if not ka.isdigit():
             raise ValueError("Digite Um Valor Válido Para Ka!")
@@ -39,18 +21,9 @@ class Controller:
         if not kb.isdigit():
             raise ValueError("Digite Um Valor Válido Para Kb!")
 
-        p = int(p)
-        e = int(e)
-        d = int(d)
         ka = int(ka)
         kb = int(kb)
 
-        if not self.isPrime(p):
-            raise ValueError("O Valor de P Precisa Ser um Número Primo!")
-
-        self.cifra.p = p
-        self.cifra.e = e
-        self.cifra.d = d
         self.cifra.ka = ka
         self.cifra.kb = kb
 
@@ -106,8 +79,8 @@ class Controller:
         self.cifra.cifrar(k)
 
     # Chama função de decifrar do modelo
-    def decifrar(self):
-        self.cifra.decifrar()
+    def decifrar(self, k):
+        self.cifra.decifrar(int(k))
 
     def salvarCifrado(self):
         self.cifra.salvarCifrado()
